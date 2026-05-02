@@ -14,9 +14,9 @@
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
         /* AUTH PAGE */
-        #auth-page { background: linear-gradient(135deg, #1e3c72, #2a5298); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #auth-page { background: linear-gradient(135deg, #1e3c72, #2a5298); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px 0; }
         .auth-card { background: white; width: 85%; max-width: 400px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .phone-row { display: flex; align-items: center; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding-left: 10px; margin: 8px 0; }
+        .phone-row { display: flex; align-items: center; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding-left: 10px; margin: 10px 0; }
         input { width: 100%; padding: 12px; border: none; background: transparent; outline: none; font-size: 16px; }
         .btn-main { width: 100%; padding: 15px; background: var(--royal-blue); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 18px; }
 
@@ -25,7 +25,7 @@
         .view { display: none; padding-bottom: 80px; }
         .view.active { display: block; }
 
-        /* HEADER & BALANCE (Image 4) */
+        /* HEADER & BALANCE */
         .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 20px 60px; text-align: center; border-radius: 0 0 40px 40px; position: relative; }
         .bal-container { background: white; margin: -40px 20px 20px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #ffeaa7; }
         .bal-box small { color: #888; font-weight: bold; font-size: 10px; }
@@ -42,39 +42,41 @@
         .plan-info h4 { margin: 0; color: var(--royal-blue); }
         .plan-info b { color: #e67e22; font-size: 18px; }
 
-        /* INVITE PAGE (Image 6) */
-        .invite-card { background: white; margin: 20px; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .invite-box { background: #f1f2f6; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed var(--royal-blue); font-size: 12px; word-break: break-all; }
-
         /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
         .nav-item { text-align: center; font-size: 11px; color: #7f8c8d; cursor: pointer; }
         .nav-item.active { color: var(--royal-blue); font-weight: bold; }
 
-        .hidden { display: none; }
+        /* የተስተካከለ የመቀያየሪያ ሊንክ */
+        .toggle-link { color: #f5576c; cursor: pointer; margin-top: 20px; font-weight: bold; display: block; text-decoration: underline; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div id="auth-page">
         <div class="logo-anim">Piker-Shop</div>
-        <p style="color:white; font-style:italic;">Premier Online Rental Solutions</p>
+        <p style="color:white; font-style:italic; margin-bottom: 20px;">Premier Online Rental Solutions</p>
+        
         <div class="auth-card">
             <div id="login-box">
-                <h2>Login</h2>
+                <h2 style="color:var(--royal-blue)">Login</h2>
                 <div class="phone-row"><span>+251</span><input type="number" id="l-phone" placeholder="9... or 7..."></div>
                 <div class="phone-row"><input type="password" id="l-pass" placeholder="Password"></div>
                 <button class="btn-main" onclick="handleLogin()">Login</button>
-                <p onclick="toggleAuth()" style="color:#f5576c; cursor:pointer; margin-top:15px; font-weight:bold;">Register New Account</p>
+                <span class="toggle-link" onclick="toggleAuth()">Register New Account</span>
             </div>
+
             <div id="reg-box" class="hidden">
-                <h2>Register</h2>
-                <input type="text" id="fname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd;" placeholder="First Name">
-                <input type="text" id="lname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd;" placeholder="Last Name">
+                <h2 style="color:var(--royal-blue)">Register</h2>
+                <input type="text" id="fname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd; box-sizing: border-box;" placeholder="First Name">
+                <input type="text" id="lname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd; box-sizing: border-box;" placeholder="Last Name">
                 <div class="phone-row"><span>+251</span><input type="number" id="r-phone" placeholder="9... or 7..."></div>
-                <input type="password" id="r-pass" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd;" placeholder="Password">
+                <input type="password" id="r-pass" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd; box-sizing: border-box;" placeholder="Password">
+                <input type="text" id="referral-input" style="background:#fff3cd; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px dashed #f39c12; box-sizing: border-box;" placeholder="Invitation Code (Optional)">
+                
                 <button class="btn-main" onclick="handleRegister()">Sign Up</button>
-                <p onclick="toggleAuth()" style="color:#f5576c; cursor:pointer; margin-top:15px; font-weight:bold;">Back to Login</p>
+                <span class="toggle-link" onclick="toggleAuth()">Already have an account? Login</span>
             </div>
         </div>
     </div>
@@ -108,27 +110,17 @@
 
         <div id="share" class="view">
             <div class="header"><h2>Invite Friends</h2></div>
-            <div class="invite-card">
+            <div style="background: white; margin: 20px; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                 <h3>Your Referral Link</h3>
-                <div class="invite-box" id="share-link">https://piker-shop.github.io/?ref=...</div>
+                <div id="share-link" style="background: #f1f2f6; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed var(--royal-blue); font-size: 12px; word-break: break-all;">---</div>
                 <button class="btn-main" onclick="copyLink()">Copy Link</button>
-            </div>
-        </div>
-
-        <div id="profile" class="view">
-            <div class="header"><div class="logo-anim">My Account</div></div>
-            <div class="bal-container" style="margin-top:-20px;">
-                <p id="profile-phone" style="font-weight:bold; color:var(--royal-blue)">+251 ---</p>
-            </div>
-            <div style="padding:20px;">
-                <button class="btn-main" onclick="logout()" style="background:#f5576c">Sign Out</button>
             </div>
         </div>
 
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="showView('home', this)">🏠<br>Home</div>
             <div class="nav-item" onclick="showView('share', this)">👥<br>Share</div>
-            <div class="nav-item" onclick="showView('profile', this)">👤<br>My</div>
+            <div class="nav-item" onclick="alert('Profile section coming soon!')">👤<br>My</div>
         </nav>
     </div>
 
@@ -137,9 +129,17 @@
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicmNyYmhvdmFkeXF6cnZ0c3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjI2NjgsImV4cCI6MjA5MzI5ODY2OH0.m5xhrUjuE42IfAiHaQ83OIwQlaeoRjrCtpZ7PFF5kmQ";
         const supabase = supabase.createClient(SB_URL, SB_KEY);
 
+        // የመቀያየሪያ ፋንክሽን
         function toggleAuth() {
-            document.getElementById('login-box').classList.toggle('hidden');
-            document.getElementById('reg-box').classList.toggle('hidden');
+            const lBox = document.getElementById('login-box');
+            const rBox = document.getElementById('reg-box');
+            if (lBox.classList.contains('hidden')) {
+                lBox.classList.remove('hidden');
+                rBox.classList.add('hidden');
+            } else {
+                lBox.classList.add('hidden');
+                rBox.classList.remove('hidden');
+            }
         }
 
         function showView(viewId, el) {
@@ -163,14 +163,14 @@
             });
 
             if (error) alert(error.message);
-            else { alert("Success! Please Login."); toggleAuth(); }
+            else { alert("Registration successful! Now please Login."); toggleAuth(); }
         }
 
         async function handleLogin() {
             const phone = document.getElementById('l-phone').value;
             const pass = document.getElementById('l-pass').value;
             const { error } = await supabase.auth.signInWithPassword({ email: phone + "@piker.com", password: pass });
-            if (error) alert("Login Failed!");
+            if (error) alert("Login Failed! Check your credentials.");
             else checkUser();
         }
 
@@ -185,7 +185,6 @@
                     document.getElementById('user-greet').innerText = `Hello, ${profile.first_name}!`;
                     document.getElementById('v-bal').innerText = `ETB ${profile.balance}`;
                     document.getElementById('v-inc').innerText = `ETB ${profile.balance}`;
-                    document.getElementById('profile-phone').innerText = `+251 ${profile.phone}`;
                     document.getElementById('share-link').innerText = window.location.origin + "/?ref=" + profile.invite_code;
                 }
             }
