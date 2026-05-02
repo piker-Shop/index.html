@@ -3,122 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piker-Shop Login</title>
+    <title>Piker-Shop | Premium Rental Solutions</title>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(45deg, #f093fb 0%, #f5576c 25%, #4facfe 50%, #00f2fe 75%, #f093fb 100%);
+            --blue-deep: #1e3c72;
+            --blue-light: #2a5298;
+        }
+
         body {
-            font-family: 'Poppins', sans-serif; /* ለስላሳ ፎንት */
-            background: #f0f2f5; /* ትንሽ ቀለል ያለ ዳራ */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
+            background-color: #f0f4f8;
+            color: #333;
         }
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* ለስላሳ ጥላ */
-            width: 90%;
-            max-width: 420px;
+
+        /* የሚንቀሳቀስ Logo ስታይል */
+        .animated-logo {
+            font-size: 38px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s linear infinite;
+            margin-bottom: 5px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .slogan-text {
+            font-size: 13px;
+            color: #ffffff;
+            opacity: 0.9;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        /* --- HOME PAGE STYLE --- */
+        .header-home {
+            background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-light) 100%);
+            color: white;
+            padding: 30px 20px 60px 20px;
             text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
         }
-        
-        /* የሚያምር ተዘዋዋሪ (Gradient) ቀለም ለአርማው */
-        .logo {
-            font-size: 36px;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b); /* ቀይ እና ብርቱካናማ ተዘዋዋሪ */
-            -webkit-background-clip: text; /* ቀለሙ በጽሁፉ ላይ ብቻ እንዲሆን */
-            -webkit-text-fill-color: transparent; /* የጽሁፉን ዋና ቀለም ማጥፋት */
-            margin-bottom: 30px;
-            letter-spacing: 1px;
+
+        .balance-card {
+            background: white;
+            margin: -40px 20px 20px 20px;
+            padding: 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
-        p {
-            color: #666;
-            margin-bottom: 25px;
+
+        .balance-item h3 { margin: 0; color: #888; font-size: 12px; letter-spacing: 1px; }
+        .balance-item p { margin: 8px 0 0 0; color: #f5576c; font-weight: bold; font-size: 22px; }
+
+        .quick-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 20px;
         }
-        
-        .input-group {
-            position: relative;
-            margin-bottom: 15px;
+
+        .menu-btn {
+            background: var(--blue-light);
+            color: white;
+            padding: 15px 5px;
+            border-radius: 18px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #e1e1e1;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: all 0.3s;
+
+        .section-title { padding: 10px 25px; font-size: 18px; font-weight: bold; color: var(--blue-deep); }
+
+        .plan-card {
+            background: white;
+            margin: 10px 20px 25px 20px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
         }
-        
-        input:focus {
-            border-color: #ff4b2b;
-            box-shadow: 0 0 8px rgba(255, 75, 43, 0.1);
-            outline: none;
-        }
-        
-        button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(to right, #ff416c, #ff4b2b); /* ለተንሪዘዋዋሪ ቀለም */
+
+        .plan-img { height: 160px; background: #004d40; width: 100%; }
+
+        .plan-details { padding: 20px; text-align: center; }
+        .plan-price { color: #f5576c; font-size: 20px; font-weight: bold; margin: 10px 0; }
+
+        .claim-btn {
+            background: var(--blue-deep);
             color: white;
             border: none;
-            border-radius: 10px;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
         }
-        
-        button:hover {
-            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.3);
+
+        /* Bottom Nav */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
         }
-        
-        button:active {
-            transform: scale(0.98); /* ሲነካ ትንሽ እንዲቀንስ */
-        }
-        
-        .footer-links {
-            margin-top: 25px;
-            font-size: 15px;
-            color: #777;
-        }
-        
-        .footer-links a {
-            color: #ff4b2b;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
+
+        .nav-link { text-decoration: none; color: #bbb; font-size: 11px; text-align: center; }
+        .nav-link.active { color: var(--blue-light); font-weight: bold; }
+
+        .hidden { display: none; }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"> </head>
+</head>
 <body>
 
-<div class="login-container">
-    <div class="logo">Piker-Shop</div> <p>እንኳን ደህና መጡ! ወደ አካውንትዎ ይግቡ</p>
-    
-    <form id="loginForm">
-        <div class="input-group">
-            <input type="text" id="phone" placeholder="የስልክ ቁጥር" required>
+    <div id="homePage">
+        <div class="header-home">
+            <div class="animated-logo">Piker-Shop</div>
+            <div class="slogan-text">
+                Upgrade Your Lifestyle Without the Price Tag.<br>
+                <strong>"Premier Online Rental Solutions."</strong>
+            </div>
+            <p style="margin-top: 20px; font-size: 15px;">ሰላም ወንደሰን፣ እንኳን ደህና መጡ!</p>
         </div>
-        <div class="input-group">
-            <input type="password" id="password" placeholder="የሚስጥር ቃል" required>
-        </div>
-        <button type="submit">ግባ</button>
-    </form>
 
-    <div class="footer-links">
-        አካውንት የለዎትም? <a href="register.html">አሁኑኑ ይመዝገቡ</a>
+        <div class="balance-card">
+            <div class="balance-item">
+                <h3>MY BALANCE</h3>
+                <p>ETB 105.00</p>
+            </div>
+            <div class="balance-item">
+                <h3>TOTAL INCOME</h3>
+                <p>ETB 105.00</p>
+            </div>
+        </div>
+
+        <div class="quick-menu">
+            <div class="menu-btn">➕<br>Add Balance</div>
+            <div class="menu-btn">💰<br>Withdraw</div>
+            <div class="menu-btn">📅<br>Daily Check</div>
+            <div class="menu-btn">🎧<br>Support</div>
+        </div>
+
+        <div class="section-title">MEMBERSHIP PLANS</div>
+
+        <div class="plan-card">
+            <div class="plan-img"></div>
+            <div class="plan-details">
+                <h4>Fund Investment 01</h4>
+                <div class="plan-price">Price: ETB 1,500</div>
+                <p style="color: #666; font-size: 14px;">Daily: ETB 200.00 | Total: ETB 56,000</p>
+                <button class="claim-btn">Claim</button>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <a href="#" class="nav-link active">🏠<br>Home</a>
+            <a href="#" class="nav-link">📊<br>Earnings</a>
+            <a href="#" class="nav-link">🎬<br>Show</a>
+            <a href="#" class="nav-link">👥<br>Share</a>
+            <a href="#" class="nav-link">👤<br>My</a>
+        </nav>
     </div>
-</div>
 
 </body>
 </html>
