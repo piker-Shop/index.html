@@ -4,179 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piker-Shop | Premium Rental Solutions</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --primary-gradient: linear-gradient(45deg, #f093fb 0%, #f5576c 25%, #4facfe 50%, #00f2fe 75%, #f093fb 100%);
-            --blue-deep: #1e3c72;
-            --blue-light: #2a5298;
-        }
+        :root { --piker-grad: linear-gradient(45deg, #f093fb, #f5576c, #4facfe, #00f2fe, #f093fb); --royal-blue: #1e3c72; --gold: #f39c12; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Animation Logo */
+        .logo-anim { font-size: 38px; font-weight: 800; background: var(--piker-grad); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: flow 3s linear infinite; }
+        @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: #f0f4f8;
-            color: #333;
-        }
+        /* AUTH PAGE */
+        #auth-page { background: linear-gradient(135deg, #1e3c72, #2a5298); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .auth-card { background: white; width: 85%; max-width: 400px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .phone-row { display: flex; align-items: center; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding-left: 10px; margin: 8px 0; }
+        input { width: 100%; padding: 12px; border: none; background: transparent; outline: none; font-size: 16px; }
+        .btn-main { width: 100%; padding: 15px; background: var(--royal-blue); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 18px; }
 
-        /* የሚንቀሳቀስ Logo ስታይል */
-        .animated-logo {
-            font-size: 38px;
-            font-weight: 800;
-            background: var(--primary-gradient);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientMove 3s linear infinite;
-            margin-bottom: 5px;
-        }
+        /* APP LAYOUT */
+        #main-app { display: none; }
+        .view { display: none; padding-bottom: 80px; }
+        .view.active { display: block; }
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
+        /* HEADER & BALANCE (Image 4) */
+        .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 20px 60px; text-align: center; border-radius: 0 0 40px 40px; position: relative; }
+        .bal-container { background: white; margin: -40px 20px 20px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #ffeaa7; }
+        .bal-box small { color: #888; font-weight: bold; font-size: 10px; }
+        .bal-box p { color: var(--gold); font-weight: 900; font-size: 20px; margin: 5px 0; }
 
-        .slogan-text {
-            font-size: 13px;
-            color: #ffffff;
-            opacity: 0.9;
-            font-style: italic;
-            line-height: 1.4;
-        }
+        /* MENU ICONS */
+        .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
+        .menu-btn { background: var(--royal-blue); color: white; padding: 12px 5px; border-radius: 15px; text-align: center; font-size: 10px; cursor: pointer; }
 
-        /* --- HOME PAGE STYLE --- */
-        .header-home {
-            background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-light) 100%);
-            color: white;
-            padding: 30px 20px 60px 20px;
-            text-align: center;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-        }
+        /* PLAN CARDS */
+        .plan-card { background: white; margin: 15px 20px; border-radius: 20px; overflow: hidden; display: flex; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #ddd; }
+        .plan-img { width: 40%; background: #004d40; }
+        .plan-info { padding: 15px; width: 60%; }
+        .plan-info h4 { margin: 0; color: var(--royal-blue); }
+        .plan-info b { color: #e67e22; font-size: 18px; }
 
-        .balance-card {
-            background: white;
-            margin: -40px 20px 20px 20px;
-            padding: 25px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
+        /* INVITE PAGE (Image 6) */
+        .invite-card { background: white; margin: 20px; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .invite-box { background: #f1f2f6; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed var(--royal-blue); font-size: 12px; word-break: break-all; }
 
-        .balance-item h3 { margin: 0; color: #888; font-size: 12px; letter-spacing: 1px; }
-        .balance-item p { margin: 8px 0 0 0; color: #f5576c; font-weight: bold; font-size: 22px; }
-
-        .quick-menu {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            padding: 20px;
-        }
-
-        .menu-btn {
-            background: var(--blue-light);
-            color: white;
-            padding: 15px 5px;
-            border-radius: 18px;
-            text-align: center;
-            font-size: 10px;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .section-title { padding: 10px 25px; font-size: 18px; font-weight: bold; color: var(--blue-deep); }
-
-        .plan-card {
-            background: white;
-            margin: 10px 20px 25px 20px;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-        }
-
-        .plan-img { height: 160px; background: #004d40; width: 100%; }
-
-        .plan-details { padding: 20px; text-align: center; }
-        .plan-price { color: #f5576c; font-size: 20px; font-weight: bold; margin: 10px 0; }
-
-        .claim-btn {
-            background: var(--blue-deep);
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Bottom Nav */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-        }
-
-        .nav-link { text-decoration: none; color: #bbb; font-size: 11px; text-align: center; }
-        .nav-link.active { color: var(--blue-light); font-weight: bold; }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .nav-item { text-align: center; font-size: 11px; color: #7f8c8d; cursor: pointer; }
+        .nav-item.active { color: var(--royal-blue); font-weight: bold; }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="homePage">
-        <div class="header-home">
-            <div class="animated-logo">Piker-Shop</div>
-            <div class="slogan-text">
-                Upgrade Your Lifestyle Without the Price Tag.<br>
-                <strong>"Premier Online Rental Solutions."</strong>
+    <div id="auth-page">
+        <div class="logo-anim">Piker-Shop</div>
+        <p style="color:white; font-style:italic;">Premier Online Rental Solutions</p>
+        <div class="auth-card">
+            <div id="login-box">
+                <h2>Login</h2>
+                <div class="phone-row"><span>+251</span><input type="number" id="l-phone" placeholder="9... or 7..."></div>
+                <div class="phone-row"><input type="password" id="l-pass" placeholder="Password"></div>
+                <button class="btn-main" onclick="handleLogin()">Login</button>
+                <p onclick="toggleAuth()" style="color:#f5576c; cursor:pointer; margin-top:15px; font-weight:bold;">Register New Account</p>
             </div>
-            <p style="margin-top: 20px; font-size: 15px;">ሰላም ወንደሰን፣ እንኳን ደህና መጡ!</p>
-        </div>
-
-        <div class="balance-card">
-            <div class="balance-item">
-                <h3>MY BALANCE</h3>
-                <p>ETB 105.00</p>
-            </div>
-            <div class="balance-item">
-                <h3>TOTAL INCOME</h3>
-                <p>ETB 105.00</p>
-            </div>
-        </div>
-
-        <div class="quick-menu">
-            <div class="menu-btn">➕<br>Add Balance</div>
-            <div class="menu-btn">💰<br>Withdraw</div>
-            <div class="menu-btn">📅<br>Daily Check</div>
-            <div class="menu-btn">🎧<br>Support</div>
-        </div>
-
-        <div class="section-title">MEMBERSHIP PLANS</div>
-
-        <div class="plan-card">
-            <div class="plan-img"></div>
-            <div class="plan-details">
-                <h4>Fund Investment 01</h4>
-                <div class="plan-price">Price: ETB 1,500</div>
-                <p style="color: #666; font-size: 14px;">Daily: ETB 200.00 | Total: ETB 56,000</p>
-                <button class="claim-btn">Claim</button>
+            <div id="reg-box" class="hidden">
+                <h2>Register</h2>
+                <input type="text" id="fname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd;" placeholder="First Name">
+                <input type="text" id="lname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd;" placeholder="Last Name">
+                <div class="phone-row"><span>+251</span><input type="number" id="r-phone" placeholder="9... or 7..."></div>
+                <input type="password" id="r-pass" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd;" placeholder="Password">
+                <button class="btn-main" onclick="handleRegister()">Sign Up</button>
+                <p onclick="toggleAuth()" style="color:#f5576c; cursor:pointer; margin-top:15px; font-weight:bold;">Back to Login</p>
             </div>
         </div>
+    </div>
 
-        <nav class="nav-bar">
-            <a href="#" class="nav-link active">🏠<br>Home</a>
-            <a href="#" class="nav-link">📊<br>Earnings</a>
-            <a href="#" class="nav-link">🎬<br>Show</a>
-            <a href="#" class="nav-link">👥<br>Share</a>
-            <a href="#" class="nav-link">👤<br>My</a>
+    <div id="main-app">
+        <div id="home" class="view active">
+            <div class="header">
+                <div class="logo-anim" style="font-size: 28px;">Piker-Shop</div>
+                <p id="user-greet">Welcome!</p>
+            </div>
+            <div class="bal-container">
+                <div class="bal-box"><small>MY BALANCE</small><p id="v-bal">ETB 0.00</p></div>
+                <div class="bal-box"><small>TOTAL INCOME</small><p id="v-inc">ETB 0.00</p></div>
+            </div>
+            <div class="quick-menu">
+                <div class="menu-btn">➕<br>Deposit</div>
+                <div class="menu-btn">💰<br>Withdraw</div>
+                <div class="menu-btn">📅<br>Daily</div>
+                <div class="menu-btn" onclick="logout()" style="background:#f5576c">🚪<br>Logout</div>
+            </div>
+            <h3 style="padding-left:20px; color:var(--royal-blue)">Membership Plans</h3>
+            <div class="plan-card">
+                <div class="plan-img"></div>
+                <div class="plan-info">
+                    <h4>Investment 01</h4>
+                    <p>Price: <b>ETB 1,500</b></p>
+                    <small>Daily: ETB 200.00</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="share" class="view">
+            <div class="header"><h2>Invite Friends</h2></div>
+            <div class="invite-card">
+                <h3>Your Referral Link</h3>
+                <div class="invite-box" id="share-link">https://piker-shop.github.io/?ref=...</div>
+                <button class="btn-main" onclick="copyLink()">Copy Link</button>
+            </div>
+        </div>
+
+        <div id="profile" class="view">
+            <div class="header"><div class="logo-anim">My Account</div></div>
+            <div class="bal-container" style="margin-top:-20px;">
+                <p id="profile-phone" style="font-weight:bold; color:var(--royal-blue)">+251 ---</p>
+            </div>
+            <div style="padding:20px;">
+                <button class="btn-main" onclick="logout()" style="background:#f5576c">Sign Out</button>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="showView('home', this)">🏠<br>Home</div>
+            <div class="nav-item" onclick="showView('share', this)">👥<br>Share</div>
+            <div class="nav-item" onclick="showView('profile', this)">👤<br>My</div>
         </nav>
     </div>
 
+    <script>
+        const SB_URL = "https://ibrcrbhovadyqzrvtsqq.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicmNyYmhvdmFkeXF6cnZ0c3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjI2NjgsImV4cCI6MjA5MzI5ODY2OH0.m5xhrUjuE42IfAiHaQ83OIwQlaeoRjrCtpZ7PFF5kmQ";
+        const supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        function toggleAuth() {
+            document.getElementById('login-box').classList.toggle('hidden');
+            document.getElementById('reg-box').classList.toggle('hidden');
+        }
+
+        function showView(viewId, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        async function handleRegister() {
+            const phone = document.getElementById('r-phone').value;
+            const pass = document.getElementById('r-pass').value;
+            const fname = document.getElementById('fname').value;
+            const lname = document.getElementById('lname').value;
+            const refCode = 'P-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+
+            const { data, error } = await supabase.auth.signUp({
+                email: phone + "@piker.com",
+                password: pass,
+                options: { data: { first_name: fname, last_name: lname, invite_code: refCode } }
+            });
+
+            if (error) alert(error.message);
+            else { alert("Success! Please Login."); toggleAuth(); }
+        }
+
+        async function handleLogin() {
+            const phone = document.getElementById('l-phone').value;
+            const pass = document.getElementById('l-pass').value;
+            const { error } = await supabase.auth.signInWithPassword({ email: phone + "@piker.com", password: pass });
+            if (error) alert("Login Failed!");
+            else checkUser();
+        }
+
+        async function checkUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                document.getElementById('auth-page').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                
+                const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+                if (profile) {
+                    document.getElementById('user-greet').innerText = `Hello, ${profile.first_name}!`;
+                    document.getElementById('v-bal').innerText = `ETB ${profile.balance}`;
+                    document.getElementById('v-inc').innerText = `ETB ${profile.balance}`;
+                    document.getElementById('profile-phone').innerText = `+251 ${profile.phone}`;
+                    document.getElementById('share-link').innerText = window.location.origin + "/?ref=" + profile.invite_code;
+                }
+            }
+        }
+
+        function copyLink() {
+            const link = document.getElementById('share-link').innerText;
+            navigator.clipboard.writeText(link);
+            alert("Invite link copied!");
+        }
+
+        async function logout() { await supabase.auth.signOut(); location.reload(); }
+
+        checkUser();
+    </script>
 </body>
 </html>
