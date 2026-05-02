@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piker-Shop Login</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* ለስላሳ ፎንት */
+            background: #f0f2f5; /* ትንሽ ቀለል ያለ ዳራ */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* ለስላሳ ጥላ */
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+        }
+        
+        /* የሚያምር ተዘዋዋሪ (Gradient) ቀለም ለአርማው */
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b); /* ቀይ እና ብርቱካናማ ተዘዋዋሪ */
+            -webkit-background-clip: text; /* ቀለሙ በጽሁፉ ላይ ብቻ እንዲሆን */
+            -webkit-text-fill-color: transparent; /* የጽሁፉን ዋና ቀለም ማጥፋት */
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: #ff4b2b;
+            box-shadow: 0 0 8px rgba(255, 75, 43, 0.1);
+            outline: none;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #ff416c, #ff4b2b); /* ለተንሪዘዋዋሪ ቀለም */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.3);
+        }
+        
+        button:active {
+            transform: scale(0.98); /* ሲነካ ትንሽ እንዲቀንስ */
+        }
+        
+        .footer-links {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #777;
+        }
+        
+        .footer-links a {
+            color: #ff4b2b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"> </head>
+<body>
+
+<div class="login-container">
+    <div class="logo">Piker-Shop</div> <p>እንኳን ደህና መጡ! ወደ አካውንትዎ ይግቡ</p>
+    
+    <form id="loginForm">
+        <div class="input-group">
+            <input type="text" id="phone" placeholder="የስልክ ቁጥር" required>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="የሚስጥር ቃል" required>
+        </div>
+        <button type="submit">ግባ</button>
+    </form>
+
+    <div class="footer-links">
+        አካውንት የለዎትም? <a href="register.html">አሁኑኑ ይመዝገቡ</a>
+    </div>
+</div>
+
+</body>
+</html>
