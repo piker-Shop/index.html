@@ -1,204 +1,850 @@
 <!DOCTYPE html>
 <html lang="am">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piker-Shop | Premium Rental Solutions</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --piker-grad: linear-gradient(45deg, #f093fb, #f5576c, #4facfe, #00f2fe, #f093fb); --royal-blue: #1e3c72; --gold: #f39c12; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; min-height: 100vh; overflow-x: hidden; }
-        
-        /* Animation Logo */
-        .logo-anim { font-size: 38px; font-weight: 800; background: var(--piker-grad); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: flow 3s linear infinite; }
-        @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piker-Shop | Premium Rental Solutions</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a2f6e;
+  --navy2: #0f1d4a;
+  --navy3: #243580;
+  --gold: #c9941a;
+  --gold2: #f0b429;
+  --gold3: #ffd166;
+  --white: #ffffff;
+  --offwhite: #f5f7fc;
+  --gray: #8a96b0;
+  --light: #e8edf8;
+  --shadow: 0 4px 20px rgba(26,47,110,0.10);
+  --shadow2: 0 12px 40px rgba(26,47,110,0.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Poppins',sans-serif;background:var(--offwhite);color:var(--navy);min-height:100vh;overflow-x:hidden;}
 
-        /* AUTH PAGE */
-        #auth-page { background: linear-gradient(135deg, #1e3c72, #2a5298); min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px 0; }
-        .auth-card { background: white; width: 85%; max-width: 400px; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .phone-row { display: flex; align-items: center; background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding-left: 10px; margin: 10px 0; }
-        input { width: 100%; padding: 12px; border: none; background: transparent; outline: none; font-size: 16px; }
-        .btn-main { width: 100%; padding: 15px; background: var(--royal-blue); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 18px; }
+/* ANIMATIONS */
+@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes coinBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
-        /* APP LAYOUT */
-        #main-app { display: none; }
-        .view { display: none; padding-bottom: 80px; }
-        .view.active { display: block; }
+/* PAGES */
+.page{display:none;min-height:100vh;}
+.page.active{display:block;animation:fadeIn .35s ease;}
+#page-auth.active{display:flex;flex-direction:column;}
 
-        /* HEADER & BALANCE */
-        .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 20px 60px; text-align: center; border-radius: 0 0 40px 40px; position: relative; }
-        .bal-container { background: white; margin: -40px 20px 20px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #ffeaa7; }
-        .bal-box small { color: #888; font-weight: bold; font-size: 10px; }
-        .bal-box p { color: var(--gold); font-weight: 900; font-size: 20px; margin: 5px 0; }
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--navy2);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
+.load-logo{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;background:linear-gradient(90deg,#c9941a,#ffd166,#f0b429,#c9941a,#ffd166);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 2.5s linear infinite;}
+.loader{width:42px;height:42px;border:3px solid rgba(240,180,41,0.2);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;}
 
-        /* MENU ICONS */
-        .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
-        .menu-btn { background: var(--royal-blue); color: white; padding: 12px 5px; border-radius: 15px; text-align: center; font-size: 10px; cursor: pointer; }
+/* TOAST */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-130px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,0.18);z-index:9998;transition:transform .4s cubic-bezier(.34,1.56,.64,1);border:1.5px solid rgba(240,180,41,.3);white-space:nowrap;max-width:90vw;text-align:center;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.success{border-color:#22c55e;}
+#toast.error{border-color:#ef4444;}
 
-        /* PLAN CARDS */
-        .plan-card { background: white; margin: 15px 20px; border-radius: 20px; overflow: hidden; display: flex; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #ddd; }
-        .plan-img { width: 40%; background: #004d40; }
-        .plan-info { padding: 15px; width: 60%; }
-        .plan-info h4 { margin: 0; color: var(--royal-blue); }
-        .plan-info b { color: #e67e22; font-size: 18px; }
+/* ====== AUTH ====== */
+#page-auth{background:var(--offwhite);}
+.auth-top{background:linear-gradient(155deg,var(--navy2) 0%,var(--navy) 55%,#2a4fd6 100%);padding:52px 28px 82px;text-align:center;position:relative;overflow:hidden;flex-shrink:0;}
+.auth-top::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:58px;background:var(--offwhite);border-radius:50% 50% 0 0/58px 58px 0 0;}
+.auth-top::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;border:28px solid rgba(240,180,41,.1);}
 
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .nav-item { text-align: center; font-size: 11px; color: #7f8c8d; cursor: pointer; }
-        .nav-item.active { color: var(--royal-blue); font-weight: bold; }
+/* Big animated logo */
+.logo-animated{font-family:'Playfair Display',serif;font-size:50px;font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,#c9941a,#ffd166,#f0b429,#c9941a,#ffd166,#f0b429);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;display:inline-block;margin-bottom:16px;}
 
-        /* የተስተካከለ የመቀያየሪያ ሊንክ */
-        .toggle-link { color: #f5576c; cursor: pointer; margin-top: 20px; font-weight: bold; display: block; text-decoration: underline; }
-        .hidden { display: none !important; }
-    </style>
+.auth-tag1{color:rgba(255,255,255,.85);font-size:13.5px;font-weight:500;line-height:1.6;position:relative;z-index:1;}
+.auth-tag2{color:var(--gold3);font-size:14px;font-weight:700;margin-top:5px;position:relative;z-index:1;}
+
+.auth-body{padding:0 18px 40px;margin-top:-16px;}
+.auth-card{background:#fff;border-radius:22px;padding:26px 22px;box-shadow:var(--shadow2);border:1.5px solid rgba(201,148,26,.12);}
+.auth-ttl{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:3px;}
+.auth-sub{font-size:13px;color:var(--gray);margin-bottom:20px;}
+
+.inp-wrap{margin-bottom:14px;}
+.inp-lbl{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block;}
+.phone-row{display:flex;gap:8px;}
+.ccode{padding:12px 14px;background:var(--offwhite);border:1.5px solid var(--light);border-radius:12px;font-size:15px;font-weight:700;color:var(--navy);white-space:nowrap;}
+.inp{width:100%;padding:13px 15px;background:var(--offwhite);border:1.5px solid var(--light);border-radius:12px;color:var(--navy);font-size:15px;font-family:'Poppins',sans-serif;outline:none;transition:border .2s,box-shadow .2s;}
+.inp:focus{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(240,180,41,.12);}
+.inp::placeholder{color:#b8c0d4;}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.inp-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.rem-row{display:flex;align-items:center;gap:8px;margin:2px 0 16px;}
+.rem-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--navy);}
+.rem-row label{font-size:13px;color:var(--gray);cursor:pointer;}
+
+.btn-navy{width:100%;padding:15px;background:var(--navy);color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.3px;}
+.btn-navy:hover{background:var(--navy3);box-shadow:0 6px 20px rgba(26,47,110,.22);transform:translateY(-1px);}
+.btn-navy:active{transform:translateY(0);}
+.auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(--gray);}
+.auth-toggle span{color:var(--gold);font-weight:700;cursor:pointer;}
+
+/* ====== HOME ====== */
+#page-home{background:var(--offwhite);padding-bottom:88px;}
+.home-hdr{background:linear-gradient(155deg,var(--navy2) 0%,var(--navy) 55%,#2a4fd6 100%);padding:48px 18px 82px;position:relative;overflow:hidden;}
+.home-hdr::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:54px;background:var(--offwhite);border-radius:50% 50% 0 0/54px 54px 0 0;}
+.home-hdr::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;border:28px solid rgba(240,180,41,.08);}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;position:relative;z-index:1;}
+.hdr-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;background:linear-gradient(90deg,#c9941a,#ffd166,#f0b429,#c9941a);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;}
+.notif{width:40px;height:40px;background:rgba(255,255,255,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:1px solid rgba(255,255,255,.15);}
+.hdr-hi{font-size:12px;color:rgba(255,255,255,.6);position:relative;z-index:1;}
+.hdr-name{font-size:21px;font-weight:800;color:#fff;position:relative;z-index:1;}
+
+/* Balance Card */
+.bal-card{background:#fff;margin:0 14px;margin-top:-48px;border-radius:20px;padding:20px;box-shadow:var(--shadow2);border:1.5px solid rgba(201,148,26,.18);position:relative;z-index:2;animation:slideUp .5s ease;}
+.bal-top{display:flex;margin-bottom:16px;}
+.bal-s{flex:1;}
+.bal-s+.bal-s{border-left:1px solid var(--light);padding-left:18px;margin-left:18px;}
+.bal-lbl{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;}
+.bal-amt{font-size:24px;font-weight:800;color:var(--gold);font-family:'Playfair Display',serif;}
+.bal-divider{height:1px;background:var(--light);margin:14px 0;}
+.bal-mini-row{display:flex;gap:8px;}
+.bal-mini{flex:1;background:var(--offwhite);border-radius:11px;padding:9px 10px;}
+.bal-mini-lbl{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;}
+.bal-mini-val{font-size:13px;font-weight:800;color:var(--navy);}
+.bal-mini-val.gr{color:#16a34a;}
+
+/* Quick Buttons */
+.quick-sec{padding:20px 14px 0;}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.q-btn{background:var(--navy);border-radius:16px;padding:14px 6px 12px;text-align:center;cursor:pointer;transition:.2s;box-shadow:0 3px 12px rgba(26,47,110,.15);}
+.q-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,47,110,.22);}
+.q-btn:active{transform:translateY(0);}
+.q-btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));}
+.q-btn.red{background:#dc2626;}
+.q-ico{font-size:24px;display:block;margin-bottom:6px;}
+.q-lbl{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.4px;line-height:1.3;}
+
+/* Section header */
+.sec-hdr{display:flex;align-items:center;gap:10px;padding:20px 14px 12px;}
+.sec-ttl{font-family:'Playfair Display',serif;font-size:19px;font-weight:800;color:var(--navy);white-space:nowrap;}
+.sec-line{flex:1;height:2px;background:linear-gradient(90deg,var(--gold2),transparent);border-radius:1px;}
+
+/* Plans */
+.plans-grid{padding:0 14px;display:flex;flex-direction:column;gap:13px;}
+.plan-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(26,47,110,.07);transition:.2s;}
+.plan-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2);}
+.plan-img{height:125px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.plan-img.p1{background:linear-gradient(135deg,#0f4c81,#1a7a5e);}
+.plan-img.p2{background:linear-gradient(135deg,#7c2d12,#c2410c);}
+.plan-img.p3{background:linear-gradient(135deg,#1e1b4b,#5b21b6);}
+.plan-ico{font-size:50px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));}
+.plan-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:var(--navy2);font-size:9px;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
+.plan-body{padding:14px 16px 16px;}
+.plan-name{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.plan-price-row{display:flex;align-items:baseline;gap:5px;margin-bottom:12px;}
+.plan-price{font-size:19px;font-weight:800;color:var(--gold);font-family:'Playfair Display',serif;}
+.plan-price-lbl{font-size:11px;color:var(--gray);}
+.plan-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:13px;}
+.plan-stat{background:var(--offwhite);border-radius:9px;padding:8px 6px;text-align:center;}
+.plan-stat-lbl{font-size:8.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;}
+.plan-stat-val{font-size:12px;font-weight:800;color:var(--navy);}
+.plan-stat-val.gr{color:#16a34a;}
+.btn-buy{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:.2s;}
+.btn-buy:hover{background:var(--navy3);}
+.btn-buy:disabled{background:var(--light);color:var(--gray);cursor:not-allowed;}
+.btn-buy.owned{background:#16a34a;}
+
+/* Bottom Nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--light);display:flex;justify-content:space-around;padding:10px 0 18px;z-index:100;box-shadow:0 -3px 16px rgba(26,47,110,.07);}
+.nit{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex:1;transition:.2s;padding:3px 0;}
+.nico{font-size:21px;transition:.2s;}
+.nlbl{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:2px;display:none;}
+.nit.active .nlbl{color:var(--gold);}
+.nit.active .nico{transform:scale(1.15);}
+.nit.active .ndot{display:block;}
+
+/* ====== INNER PAGES ====== */
+.inner-hdr{background:linear-gradient(155deg,var(--navy2),var(--navy));padding:48px 18px 28px;color:#fff;position:relative;overflow:hidden;}
+.inner-hdr::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:38px;background:var(--offwhite);border-radius:50% 50% 0 0/38px 38px 0 0;}
+.inner-ttl{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;position:relative;z-index:1;}
+.inner-sub{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px;position:relative;z-index:1;}
+
+/* Earnings */
+#page-earnings{background:var(--offwhite);padding-bottom:88px;}
+.earn-cards{padding:18px 14px 0;display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.ec{background:#fff;border-radius:14px;padding:14px;box-shadow:var(--shadow);border:1px solid rgba(26,47,110,.05);}
+.ec-lbl{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.ec-val{font-size:17px;font-weight:800;color:var(--navy);}
+.ec-val.gold{color:var(--gold);}
+.ec-val.gr{color:#16a34a;}
+
+.tx-sec{padding:18px 14px;}
+.tx-ttl{font-family:'Playfair Display',serif;font-size:17px;font-weight:800;color:var(--navy);margin-bottom:12px;}
+.tx-item{background:#fff;border-radius:13px;padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:11px;box-shadow:var(--shadow);border:1px solid rgba(26,47,110,.05);}
+.tx-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.tx-ico.dep{background:rgba(22,163,74,.1);}
+.tx-ico.wit{background:rgba(220,38,38,.1);}
+.tx-ico.bon{background:rgba(201,148,26,.1);}
+.tx-ico.inc{background:rgba(26,47,110,.08);}
+.tx-info{flex:1;min-width:0;}
+.tx-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tx-date{font-size:10.5px;color:var(--gray);}
+.tx-st{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:8px;display:inline-block;margin-top:2px;}
+.tx-st.pend{background:rgba(201,148,26,.12);color:var(--gold);}
+.tx-st.done{background:rgba(22,163,74,.1);color:#16a34a;}
+.tx-amt{font-size:14px;font-weight:800;white-space:nowrap;}
+.tx-amt.pos{color:#16a34a;}
+.tx-amt.neg{color:#dc2626;}
+.empty-box{text-align:center;padding:48px 20px;color:var(--gray);}
+.empty-ico{font-size:46px;margin-bottom:10px;opacity:.5;}
+
+/* Share */
+#page-share{background:var(--offwhite);padding-bottom:88px;}
+.ref-hero{margin:18px 14px;background:var(--navy);border-radius:20px;padding:24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(26,47,110,.22);}
+.ref-hero::before{content:'';position:absolute;top:-35px;right:-35px;width:130px;height:130px;border-radius:50%;border:22px solid rgba(240,180,41,.1);}
+.ref-h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:800;color:#fff;margin-bottom:7px;}
+.ref-bonus{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:var(--gold2);margin:5px 0;}
+.ref-p{font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.6;}
+.ref-code-wrap{margin:0 14px 14px;}
+.ref-code-lbl{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.ref-code-box{background:#fff;border-radius:13px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border:1.5px dashed rgba(201,148,26,.4);box-shadow:var(--shadow);}
+.ref-code-val{font-family:'Playfair Display',serif;font-size:21px;font-weight:800;color:var(--gold);letter-spacing:2px;}
+.copy-btn{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:.2s;}
+.copy-btn:hover{background:var(--navy3);}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 14px 18px;}
+.rst{background:#fff;border-radius:13px;padding:14px;text-align:center;box-shadow:var(--shadow);}
+.rst-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--navy);}
+.rst-lbl{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.share-btns{padding:0 14px;display:flex;flex-direction:column;gap:9px;}
+.share-btn{padding:14px 18px;border-radius:13px;font-size:14px;font-weight:700;font-family:'Poppins';cursor:pointer;border:none;display:flex;align-items:center;gap:9px;box-shadow:var(--shadow);}
+.share-btn.tg{background:#229ed9;color:#fff;}
+.share-btn.wa{background:#25d366;color:#fff;}
+
+/* Profile */
+#page-profile{background:var(--offwhite);padding-bottom:88px;}
+.prof-hero{background:linear-gradient(155deg,var(--navy2),var(--navy));padding:48px 18px 76px;text-align:center;position:relative;overflow:hidden;}
+.prof-hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:48px;background:var(--offwhite);border-radius:50% 50% 0 0/48px 48px 0 0;}
+.avatar-wrap{position:relative;display:inline-block;margin-bottom:12px;}
+.avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:var(--navy2);border:4px solid rgba(255,255,255,.25);box-shadow:0 6px 20px rgba(0,0,0,.2);font-family:'Playfair Display',serif;}
+.av-badge{position:absolute;bottom:2px;right:2px;background:#22c55e;width:20px;height:20px;border-radius:50%;border:3px solid var(--navy2);display:flex;align-items:center;justify-content:center;font-size:9px;}
+.prof-name{font-family:'Playfair Display',serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:3px;position:relative;z-index:1;}
+.prof-phone{font-size:12px;color:rgba(255,255,255,.55);position:relative;z-index:1;}
+.prof-menu{padding:18px 14px;}
+.pm-item{background:#fff;border-radius:15px;padding:14px 16px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);border:1px solid rgba(26,47,110,.05);cursor:pointer;transition:.2s;}
+.pm-item:hover{border-color:rgba(201,148,26,.22);transform:translateX(2px);}
+.pm-left{display:flex;align-items:center;gap:12px;}
+.pm-ico{width:38px;height:38px;border-radius:11px;background:var(--offwhite);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.pm-lbl{font-size:13.5px;font-weight:700;color:var(--navy);}
+.pm-sub{font-size:10.5px;color:var(--gray);margin-top:1px;}
+.pm-arr{color:var(--gray);font-size:20px;}
+.pm-item.danger .pm-lbl{color:#dc2626;}
+.pm-item.danger .pm-ico{background:rgba(220,38,38,.07);}
+
+/* MODALS */
+.modal-bg{position:fixed;inset:0;background:rgba(15,29,74,.6);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:22px 20px 28px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.2,.64,1);max-height:92vh;overflow-y:auto;}
+.modal-bg.open .modal{transform:translateY(0);}
+.mbar{width:38px;height:4px;background:var(--light);border-radius:2px;margin:0 auto 18px;}
+.mttl{font-family:'Playfair Display',serif;font-size:21px;font-weight:800;color:var(--navy);margin-bottom:3px;}
+.msub{font-size:12.5px;color:var(--gray);margin-bottom:20px;}
+.amt-disp{text-align:center;padding:13px;background:var(--offwhite);border-radius:14px;margin-bottom:16px;}
+.amt-cur{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:2px;}
+.amt-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--gold);}
+.qa-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+.qa-pill{padding:7px 14px;background:var(--offwhite);border:1.5px solid var(--light);border-radius:20px;color:var(--navy);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Poppins';transition:.2s;}
+.qa-pill:hover{border-color:var(--gold2);color:var(--gold);}
+.meth-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
+.meth-card{background:var(--offwhite);border:2px solid var(--light);border-radius:13px;padding:13px;text-align:center;cursor:pointer;transition:.2s;}
+.meth-card.active{border-color:var(--navy);background:rgba(26,47,110,.04);}
+.meth-ico{font-size:24px;margin-bottom:4px;}
+.meth-lbl{font-size:11.5px;font-weight:700;color:var(--navy);}
+.cancel-lnk{text-align:center;margin-top:13px;font-size:13px;color:var(--gray);cursor:pointer;font-weight:600;}
+.cancel-lnk:hover{color:var(--navy);}
+
+/* Daily modal */
+.daily-hero{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:18px;padding:26px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+.daily-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;border:18px solid rgba(240,180,41,.12);}
+.daily-coin{font-size:52px;display:block;margin-bottom:9px;animation:coinBounce 1.8s ease infinite;}
+.daily-ttl{font-size:15px;font-weight:700;color:rgba(255,255,255,.75);margin-bottom:5px;}
+.daily-amt{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:var(--gold2);margin-bottom:3px;}
+.daily-sub{font-size:12px;color:rgba(255,255,255,.5);}
+.streak-row{display:flex;gap:6px;margin-bottom:20px;justify-content:center;flex-wrap:wrap;}
+.spill{min-width:38px;height:46px;border-radius:11px;background:var(--offwhite);border:1.5px solid var(--light);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:var(--gray);text-transform:uppercase;}
+.spill .si{font-size:15px;margin-bottom:2px;}
+.spill.done{background:rgba(22,163,74,.08);border-color:#22c55e;color:#16a34a;}
+.spill.today{background:rgba(201,148,26,.08);border-color:var(--gold2);color:var(--gold);animation:pulse 1.5s ease infinite;}
+
+.hidden{display:none!important;}
+</style>
 </head>
 <body>
 
-    <div id="auth-page">
-        <div class="logo-anim">Piker-Shop</div>
-        <p style="color:white; font-style:italic; margin-bottom: 20px;">Premier Online Rental Solutions</p>
-        
-        <div class="auth-card">
-            <div id="login-box">
-                <h2 style="color:var(--royal-blue)">Login</h2>
-                <div class="phone-row"><span>+251</span><input type="number" id="l-phone" placeholder="9... or 7..."></div>
-                <div class="phone-row"><input type="password" id="l-pass" placeholder="Password"></div>
-                <button class="btn-main" onclick="handleLogin()">Login</button>
-                <span class="toggle-link" onclick="toggleAuth()">Register New Account</span>
-            </div>
+<!-- Loading -->
+<div id="loading">
+  <div class="load-logo">Piker-Shop</div>
+  <div class="loader"></div>
+</div>
 
-            <div id="reg-box" class="hidden">
-                <h2 style="color:var(--royal-blue)">Register</h2>
-                <input type="text" id="fname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd; box-sizing: border-box;" placeholder="First Name">
-                <input type="text" id="lname" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd; box-sizing: border-box;" placeholder="Last Name">
-                <div class="phone-row"><span>+251</span><input type="number" id="r-phone" placeholder="9... or 7..."></div>
-                <input type="password" id="r-pass" style="background:#f9f9f9; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px solid #ddd; box-sizing: border-box;" placeholder="Password">
-                <input type="text" id="referral-input" style="background:#fff3cd; margin-bottom:8px; border-radius:10px; padding:12px; width:100%; border:1px dashed #f39c12; box-sizing: border-box;" placeholder="Invitation Code (Optional)">
-                
-                <button class="btn-main" onclick="handleRegister()">Sign Up</button>
-                <span class="toggle-link" onclick="toggleAuth()">Already have an account? Login</span>
-            </div>
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ====== AUTH PAGE ====== -->
+<div id="page-auth" class="page">
+  <div class="auth-top">
+    <div class="logo-animated">Piker-Shop</div>
+    <div class="auth-tag1">Upgrade Your Lifestyle Without the Price Tag.</div>
+    <div class="auth-tag2">"Premier Online Rental Solutions."</div>
+  </div>
+  <div class="auth-body">
+
+    <!-- Login -->
+    <div class="auth-card" id="login-form">
+      <div class="auth-ttl">ይግቡ</div>
+      <div class="auth-sub">ወደ አካውንትዎ እንኳን ደህና መጡ</div>
+      <div class="inp-wrap">
+        <label class="inp-lbl">ስልክ ቁጥር</label>
+        <div class="phone-row">
+          <div class="ccode">+251</div>
+          <input class="inp" type="tel" id="l-phone" placeholder="9XXXXXXXX">
         </div>
+      </div>
+      <div class="inp-wrap">
+        <label class="inp-lbl">ፓስወርድ</label>
+        <input class="inp" type="password" id="l-pass" placeholder="••••••••">
+      </div>
+      <div class="rem-row">
+        <input type="checkbox" id="rem">
+        <label for="rem">ፓስወርድ አስቀምጥ</label>
+      </div>
+      <button class="btn-navy" onclick="handleLogin()">Login</button>
+      <div class="auth-toggle">አካውንት የለዎትም? <span onclick="showReg()">Register</span></div>
     </div>
 
-    <div id="main-app">
-        <div id="home" class="view active">
-            <div class="header">
-                <div class="logo-anim" style="font-size: 28px;">Piker-Shop</div>
-                <p id="user-greet">Welcome!</p>
-            </div>
-            <div class="bal-container">
-                <div class="bal-box"><small>MY BALANCE</small><p id="v-bal">ETB 0.00</p></div>
-                <div class="bal-box"><small>TOTAL INCOME</small><p id="v-inc">ETB 0.00</p></div>
-            </div>
-            <div class="quick-menu">
-                <div class="menu-btn">➕<br>Deposit</div>
-                <div class="menu-btn">💰<br>Withdraw</div>
-                <div class="menu-btn">📅<br>Daily</div>
-                <div class="menu-btn" onclick="logout()" style="background:#f5576c">🚪<br>Logout</div>
-            </div>
-            <h3 style="padding-left:20px; color:var(--royal-blue)">Membership Plans</h3>
-            <div class="plan-card">
-                <div class="plan-img"></div>
-                <div class="plan-info">
-                    <h4>Investment 01</h4>
-                    <p>Price: <b>ETB 1,500</b></p>
-                    <small>Daily: ETB 200.00</small>
-                </div>
-            </div>
+    <!-- Register -->
+    <div class="auth-card hidden" id="reg-form">
+      <div class="auth-ttl">ተመዝገቡ</div>
+      <div class="auth-sub">ዛሬ ይቀላቀሉ — ETB 105 ቦነስ ያግኙ! 🎁</div>
+      <div class="inp-row2">
+        <div class="inp-wrap">
+          <label class="inp-lbl">ስም</label>
+          <input class="inp" type="text" id="fname" placeholder="ስምዎ">
         </div>
-
-        <div id="share" class="view">
-            <div class="header"><h2>Invite Friends</h2></div>
-            <div style="background: white; margin: 20px; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                <h3>Your Referral Link</h3>
-                <div id="share-link" style="background: #f1f2f6; padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px dashed var(--royal-blue); font-size: 12px; word-break: break-all;">---</div>
-                <button class="btn-main" onclick="copyLink()">Copy Link</button>
-            </div>
+        <div class="inp-wrap">
+          <label class="inp-lbl">የአባት ስም</label>
+          <input class="inp" type="text" id="lname" placeholder="የአባት ስም">
         </div>
-
-        <nav class="bottom-nav">
-            <div class="nav-item active" onclick="showView('home', this)">🏠<br>Home</div>
-            <div class="nav-item" onclick="showView('share', this)">👥<br>Share</div>
-            <div class="nav-item" onclick="alert('Profile section coming soon!')">👤<br>My</div>
-        </nav>
+      </div>
+      <div class="inp-wrap">
+        <label class="inp-lbl">ስልክ ቁጥር</label>
+        <div class="phone-row">
+          <div class="ccode">+251</div>
+          <input class="inp" type="tel" id="r-phone" placeholder="9XXXXXXXX">
+        </div>
+      </div>
+      <div class="inp-wrap">
+        <label class="inp-lbl">ፓስወርድ</label>
+        <input class="inp" type="password" id="r-pass" placeholder="ቢያንስ 6 ቁምፊ">
+      </div>
+      <div class="inp-wrap">
+        <label class="inp-lbl">Referral ኮድ (ካለ)</label>
+        <input class="inp" type="text" id="r-ref" placeholder="PKR-XXXXXX">
+      </div>
+      <button class="btn-navy" onclick="handleRegister()">Sign Up</button>
+      <div class="auth-toggle">አካውንት አለዎት? <span onclick="showLogin()">Login</span></div>
     </div>
+  </div>
+</div>
 
-    <script>
-        const SB_URL = "https://ibrcrbhovadyqzrvtsqq.supabase.co";
-        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicmNyYmhvdmFkeXF6cnZ0c3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjI2NjgsImV4cCI6MjA5MzI5ODY2OH0.m5xhrUjuE42IfAiHaQ83OIwQlaeoRjrCtpZ7PFF5kmQ";
-        const supabase = supabase.createClient(SB_URL, SB_KEY);
+<!-- ====== HOME PAGE ====== -->
+<div id="page-home" class="page">
+  <div class="home-hdr">
+    <div class="hdr-top">
+      <div class="hdr-logo">Piker-Shop</div>
+      <div class="notif" onclick="showToast('🔔 ምንም አዲስ ማሳወቂያ የለም')">🔔</div>
+    </div>
+    <div class="hdr-hi">ሰላም,</div>
+    <div class="hdr-name" id="h-name">ተጠቃሚ</div>
+  </div>
 
-        // የመቀያየሪያ ፋንክሽን
-        function toggleAuth() {
-            const lBox = document.getElementById('login-box');
-            const rBox = document.getElementById('reg-box');
-            if (lBox.classList.contains('hidden')) {
-                lBox.classList.remove('hidden');
-                rBox.classList.add('hidden');
-            } else {
-                lBox.classList.add('hidden');
-                rBox.classList.remove('hidden');
-            }
-        }
+  <div class="bal-card">
+    <div class="bal-top">
+      <div class="bal-s">
+        <div class="bal-lbl">MY BALANCE</div>
+        <div class="bal-amt" id="h-bal">ETB 0.00</div>
+      </div>
+      <div class="bal-s">
+        <div class="bal-lbl">TOTAL INCOME</div>
+        <div class="bal-amt" id="h-inc">ETB 0.00</div>
+      </div>
+    </div>
+    <div class="bal-divider"></div>
+    <div class="bal-mini-row">
+      <div class="bal-mini"><div class="bal-mini-lbl">Plan ገቢ</div><div class="bal-mini-val gr" id="h-plan">0.00</div></div>
+      <div class="bal-mini"><div class="bal-mini-lbl">Daily</div><div class="bal-mini-val gr" id="h-daily">0.00</div></div>
+      <div class="bal-mini"><div class="bal-mini-lbl">Streak</div><div class="bal-mini-val" id="h-streak">0 ቀን</div></div>
+    </div>
+  </div>
 
-        function showView(viewId, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        }
+  <div class="quick-sec">
+    <div class="quick-grid">
+      <div class="q-btn" onclick="openModal('deposit')"><span class="q-ico">💰</span><div class="q-lbl">Add Balance</div></div>
+      <div class="q-btn" onclick="openModal('withdraw')"><span class="q-ico">📤</span><div class="q-lbl">Withdraw</div></div>
+      <div class="q-btn gold" onclick="openModal('daily')"><span class="q-ico">📅</span><div class="q-lbl">Daily Check-in</div></div>
+      <div class="q-btn red" onclick="goCS()"><span class="q-ico">🎧</span><div class="q-lbl">Customer Service</div></div>
+    </div>
+  </div>
 
-        async function handleRegister() {
-            const phone = document.getElementById('r-phone').value;
-            const pass = document.getElementById('r-pass').value;
-            const fname = document.getElementById('fname').value;
-            const lname = document.getElementById('lname').value;
-            const refCode = 'P-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+  <div class="sec-hdr"><div class="sec-ttl">MEMBERSHIP PLANS</div><div class="sec-line"></div></div>
+  <div class="plans-grid" id="plans-list"></div>
 
-            const { data, error } = await supabase.auth.signUp({
-                email: phone + "@piker.com",
-                password: pass,
-                options: { data: { first_name: fname, last_name: lname, invite_code: refCode } }
-            });
+  <div class="bnav">
+    <div class="nit active" onclick="switchPage('home')"><div class="nico">🏠</div><div class="nlbl">Home</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('earnings')"><div class="nico">📊</div><div class="nlbl">Earnings</div><div class="ndot"></div></div>
+    <div class="nit" onclick="showToast('🎬 Show — 近く公開')"><div class="nico">▶️</div><div class="nlbl">Show</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('share')"><div class="nico">🔗</div><div class="nlbl">Share</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('profile')"><div class="nico">👤</div><div class="nlbl">My</div><div class="ndot"></div></div>
+  </div>
+</div>
 
-            if (error) alert(error.message);
-            else { alert("Registration successful! Now please Login."); toggleAuth(); }
-        }
+<!-- ====== EARNINGS PAGE ====== -->
+<div id="page-earnings" class="page">
+  <div class="inner-hdr"><div class="inner-ttl">Earnings</div><div class="inner-sub">የሁሉም ገቢዎችዎ ማጠቃለያ</div></div>
+  <div class="earn-cards">
+    <div class="ec"><div class="ec-lbl">ቀሪ ሒሳብ</div><div class="ec-val gold" id="e-bal">0.00</div></div>
+    <div class="ec"><div class="ec-lbl">ጠቅላላ ገቢ</div><div class="ec-val gr" id="e-inc">0.00</div></div>
+    <div class="ec"><div class="ec-lbl">Plan ገቢ</div><div class="ec-val gr" id="e-plan">0.00</div></div>
+    <div class="ec"><div class="ec-lbl">Daily ቦነስ</div><div class="ec-val gr" id="e-daily">0.00</div></div>
+    <div class="ec"><div class="ec-lbl">Referral ቦነስ</div><div class="ec-val gr" id="e-ref">0.00</div></div>
+    <div class="ec"><div class="ec-lbl">ጠቅላላ ወጪ</div><div class="ec-val" id="e-wit">0.00</div></div>
+  </div>
+  <div class="tx-sec">
+    <div class="tx-ttl">ግብይቶች</div>
+    <div id="tx-list"><div class="empty-box"><div class="empty-ico">📭</div><div>ምንም ግብይት የለም</div></div></div>
+  </div>
+  <div class="bnav">
+    <div class="nit" onclick="switchPage('home')"><div class="nico">🏠</div><div class="nlbl">Home</div><div class="ndot"></div></div>
+    <div class="nit active" onclick="switchPage('earnings')"><div class="nico">📊</div><div class="nlbl">Earnings</div><div class="ndot"></div></div>
+    <div class="nit" onclick="showToast('🎬 Show')"><div class="nico">▶️</div><div class="nlbl">Show</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('share')"><div class="nico">🔗</div><div class="nlbl">Share</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('profile')"><div class="nico">👤</div><div class="nlbl">My</div><div class="ndot"></div></div>
+  </div>
+</div>
 
-        async function handleLogin() {
-            const phone = document.getElementById('l-phone').value;
-            const pass = document.getElementById('l-pass').value;
-            const { error } = await supabase.auth.signInWithPassword({ email: phone + "@piker.com", password: pass });
-            if (error) alert("Login Failed! Check your credentials.");
-            else checkUser();
-        }
+<!-- ====== SHARE PAGE ====== -->
+<div id="page-share" class="page">
+  <div class="inner-hdr"><div class="inner-ttl">Share & Earn</div><div class="inner-sub">ወዳጅዎን ጋብዘው ቦነስ ያግኙ</div></div>
+  <div style="height:18px"></div>
+  <div class="ref-hero">
+    <div style="font-size:38px;margin-bottom:9px">🎁</div>
+    <div class="ref-h3">Referral ቦነስ!</div>
+    <div class="ref-bonus">ETB 105</div>
+    <div class="ref-p">ለእያንዳንዱ ወዳጅ ሲቀላቀሉ<br>ETB 105 ቦነስ ያገኛሉ!</div>
+  </div>
+  <div class="ref-code-wrap">
+    <div class="ref-code-lbl">የእርስዎ Referral ኮድ</div>
+    <div class="ref-code-box">
+      <div class="ref-code-val" id="s-code">PKR-000000</div>
+      <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+    </div>
+  </div>
+  <div class="ref-stats">
+    <div class="rst"><div class="rst-val" id="s-count">0</div><div class="rst-lbl">የተጋበዙ ሰዎች</div></div>
+    <div class="rst"><div class="rst-val" id="s-earn">0</div><div class="rst-lbl">ቦነስ ETB</div></div>
+  </div>
+  <div class="share-btns">
+    <button class="share-btn tg" onclick="shareTg()">✈️ Telegram ላይ ያጋሩ</button>
+    <button class="share-btn wa" onclick="shareWa()">💬 WhatsApp ላይ ያጋሩ</button>
+  </div>
+  <div class="bnav">
+    <div class="nit" onclick="switchPage('home')"><div class="nico">🏠</div><div class="nlbl">Home</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('earnings')"><div class="nico">📊</div><div class="nlbl">Earnings</div><div class="ndot"></div></div>
+    <div class="nit" onclick="showToast('🎬 Show')"><div class="nico">▶️</div><div class="nlbl">Show</div><div class="ndot"></div></div>
+    <div class="nit active" onclick="switchPage('share')"><div class="nico">🔗</div><div class="nlbl">Share</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('profile')"><div class="nico">👤</div><div class="nlbl">My</div><div class="ndot"></div></div>
+  </div>
+</div>
 
-        async function checkUser() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                document.getElementById('auth-page').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                
-                const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-                if (profile) {
-                    document.getElementById('user-greet').innerText = `Hello, ${profile.first_name}!`;
-                    document.getElementById('v-bal').innerText = `ETB ${profile.balance}`;
-                    document.getElementById('v-inc').innerText = `ETB ${profile.balance}`;
-                    document.getElementById('share-link').innerText = window.location.origin + "/?ref=" + profile.invite_code;
-                }
-            }
-        }
+<!-- ====== PROFILE PAGE ====== -->
+<div id="page-profile" class="page">
+  <div class="prof-hero">
+    <div class="avatar-wrap">
+      <div class="avatar" id="p-av">P</div>
+      <div class="av-badge">✓</div>
+    </div>
+    <div class="prof-name" id="p-name">ስም</div>
+    <div class="prof-phone" id="p-phone">+251 9XXXXXXXX</div>
+  </div>
+  <div class="prof-menu">
+    <div class="pm-item" onclick="openModal('deposit')"><div class="pm-left"><div class="pm-ico">💰</div><div><div class="pm-lbl">Add Balance</div><div class="pm-sub">ሒሳብ ያስቀምጡ</div></div></div><div class="pm-arr">›</div></div>
+    <div class="pm-item" onclick="openModal('withdraw')"><div class="pm-left"><div class="pm-ico">📤</div><div><div class="pm-lbl">Withdraw</div><div class="pm-sub">ሒሳብ ያውጡ</div></div></div><div class="pm-arr">›</div></div>
+    <div class="pm-item" onclick="switchPage('earnings')"><div class="pm-left"><div class="pm-ico">📊</div><div><div class="pm-lbl">ግብይት ታሪክ</div><div class="pm-sub">ሁሉም ክፍያዎች</div></div></div><div class="pm-arr">›</div></div>
+    <div class="pm-item" onclick="switchPage('share')"><div class="pm-left"><div class="pm-ico">🎁</div><div><div class="pm-lbl">Referral ቦነስ</div><div class="pm-sub">ወዳጆቻቸውን ጋብዙ</div></div></div><div class="pm-arr">›</div></div>
+    <div class="pm-item" onclick="goCS()"><div class="pm-left"><div class="pm-ico">🎧</div><div><div class="pm-lbl">Customer Service</div><div class="pm-sub">እርዳታ ያግኙ</div></div></div><div class="pm-arr">›</div></div>
+    <div class="pm-item danger" onclick="logout()"><div class="pm-left"><div class="pm-ico">🚪</div><div><div class="pm-lbl">Logout</div><div class="pm-sub">ይውጡ</div></div></div><div class="pm-arr">›</div></div>
+  </div>
+  <div class="bnav">
+    <div class="nit" onclick="switchPage('home')"><div class="nico">🏠</div><div class="nlbl">Home</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('earnings')"><div class="nico">📊</div><div class="nlbl">Earnings</div><div class="ndot"></div></div>
+    <div class="nit" onclick="showToast('🎬 Show')"><div class="nico">▶️</div><div class="nlbl">Show</div><div class="ndot"></div></div>
+    <div class="nit" onclick="switchPage('share')"><div class="nico">🔗</div><div class="nlbl">Share</div><div class="ndot"></div></div>
+    <div class="nit active" onclick="switchPage('profile')"><div class="nico">👤</div><div class="nlbl">My</div><div class="ndot"></div></div>
+  </div>
+</div>
 
-        function copyLink() {
-            const link = document.getElementById('share-link').innerText;
-            navigator.clipboard.writeText(link);
-            alert("Invite link copied!");
-        }
+<!-- ====== MODALS ====== -->
+<!-- Deposit -->
+<div class="modal-bg" id="modal-deposit">
+  <div class="modal">
+    <div class="mbar"></div>
+    <div class="mttl">💰 Add Balance</div>
+    <div class="msub">ምን ያህል ሒሳብ ማስቀመጥ ይፈልጋሉ?</div>
+    <div class="amt-disp"><div class="amt-cur">ETB</div><div class="amt-num" id="dep-disp">0</div></div>
+    <div class="qa-row">
+      <button class="qa-pill" onclick="setAmt('dep',500)">500</button>
+      <button class="qa-pill" onclick="setAmt('dep',1000)">1,000</button>
+      <button class="qa-pill" onclick="setAmt('dep',2000)">2,000</button>
+      <button class="qa-pill" onclick="setAmt('dep',5000)">5,000</button>
+    </div>
+    <div class="inp-wrap"><label class="inp-lbl">መጠን (ብር)</label><input class="inp" type="number" id="dep-amt" placeholder="0" oninput="document.getElementById('dep-disp').textContent=this.value||'0'"></div>
+    <div class="inp-wrap"><label class="inp-lbl">ቴሌብርር ቁጥር</label><input class="inp" type="tel" id="dep-tele" placeholder="+251 9XXXXXXXX"></div>
+    <div class="inp-wrap"><label class="inp-lbl">Transaction ID</label><input class="inp" type="text" id="dep-txid" placeholder="የደረሰኝ ቁጥር"></div>
+    <button class="btn-navy" onclick="handleDeposit()">✅ Deposit አድርጉ</button>
+    <div class="cancel-lnk" onclick="closeModal('deposit')">ሰርዝ</div>
+  </div>
+</div>
 
-        async function logout() { await supabase.auth.signOut(); location.reload(); }
+<!-- Withdraw -->
+<div class="modal-bg" id="modal-withdraw">
+  <div class="modal">
+    <div class="mbar"></div>
+    <div class="mttl">📤 Withdraw</div>
+    <div class="msub">ቢያንስ ETB 200 ያውጡ</div>
+    <div class="amt-disp"><div class="amt-cur">ETB</div><div class="amt-num" id="wit-disp">0</div></div>
+    <div class="qa-row">
+      <button class="qa-pill" onclick="setAmt('wit',200)">200</button>
+      <button class="qa-pill" onclick="setAmt('wit',500)">500</button>
+      <button class="qa-pill" onclick="setAmt('wit',1000)">1,000</button>
+      <button class="qa-pill" onclick="setAmt('wit',2000)">2,000</button>
+    </div>
+    <div class="inp-wrap"><label class="inp-lbl">የሚወስዱት ብር</label><input class="inp" type="number" id="wit-amt" placeholder="0" oninput="document.getElementById('wit-disp').textContent=this.value||'0'"></div>
+    <div class="inp-wrap">
+      <label class="inp-lbl">የሚላከው ዘዴ</label>
+      <div class="meth-grid">
+        <div class="meth-card active" onclick="selMeth('telebirr')" id="m-tele"><div class="meth-ico">📱</div><div class="meth-lbl">Telebirr</div></div>
+        <div class="meth-card" onclick="selMeth('bank')" id="m-bank"><div class="meth-ico">🏦</div><div class="meth-lbl">ባንክ</div></div>
+      </div>
+    </div>
+    <div class="inp-wrap"><label class="inp-lbl">ቁጥር / አካውንት</label><input class="inp" type="tel" id="wit-acc" placeholder="09... ወይም የባንክ ቁጥር"></div>
+    <button class="btn-navy" onclick="handleWithdraw()">✅ ጥያቄ ያስገቡ</button>
+    <div class="cancel-lnk" onclick="closeModal('withdraw')">ሰርዝ</div>
+  </div>
+</div>
 
-        checkUser();
-    </script>
+<!-- Daily -->
+<div class="modal-bg" id="modal-daily">
+  <div class="modal">
+    <div class="mbar"></div>
+    <div class="daily-hero">
+      <span class="daily-coin">🪙</span>
+      <div class="daily-ttl">Daily Check-In</div>
+      <div class="daily-amt" id="d-amt">ETB 25</div>
+      <div class="daily-sub" id="d-sub">ዛሬ ቦነስዎን ያግኙ!</div>
+    </div>
+    <div class="mttl" style="font-size:15px;margin-bottom:10px">📅 የዚህ ሳምንት Streak</div>
+    <div class="streak-row" id="streak-row"></div>
+    <button class="btn-navy" id="daily-btn" onclick="handleDaily()">🎁 ዛሬ ቦነስ ውሰዱ</button>
+    <div class="cancel-lnk" onclick="closeModal('daily')">ዝጋ</div>
+  </div>
+</div>
+
+<script>
+// ===== SUPABASE =====
+const SB_URL="https://ibrcrbhovadyqzrvtsqq.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlicmNyYmhvdmFkeXF6cnZ0c3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjI2NjgsImV4cCI6MjA5MzI5ODY2OH0.m5xhrUjuE42IfAiHaQ83OIwQlaeoRjrCtpZ7PFF5kmQ";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+let user=null,profile=null,txs=[],witMeth='telebirr';
+
+const PLANS=[
+  {id:1,name:"Membership Plan 01",ico:"📈",img:"p1",price:1500,daily:200,days:15},
+  {id:2,name:"Membership Plan 02",ico:"💼",img:"p2",price:3500,daily:500,days:15},
+  {id:3,name:"Membership Plan 03",ico:"👑",img:"p3",price:8000,daily:1200,days:15},
+];
+
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show '+type;
+  setTimeout(()=>t.className='',3500);
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+}
+function switchPage(id){
+  showPage(id);
+  if(id==='earnings')renderEarnings();
+  if(id==='share')renderShare();
+}
+function showReg(){document.getElementById('login-form').classList.add('hidden');document.getElementById('reg-form').classList.remove('hidden');}
+function showLogin(){document.getElementById('reg-form').classList.add('hidden');document.getElementById('login-form').classList.remove('hidden');}
+function fmt(n){return parseFloat(n||0).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function genRef(ph){return 'PKR-'+String(ph).replace(/\D/g,'').slice(-6);}
+function goCS(){window.open('https://t.me/PikerShopSupport','_blank');}
+
+async function handleRegister(){
+  const fn=document.getElementById('fname').value.trim();
+  const ln=document.getElementById('lname').value.trim();
+  const ph=document.getElementById('r-phone').value.trim().replace(/\D/g,'');
+  const pw=document.getElementById('r-pass').value;
+  const ref=document.getElementById('r-ref').value.trim();
+  if(!fn||!ln){showToast('ስም ያስፈልጋል!','error');return;}
+  if(ph.length<9){showToast('ስልክ ቁጥር ያረጋግጡ!','error');return;}
+  if(pw.length<6){showToast('ፓስወርድ ቢያንስ 6 ቁምፊ!','error');return;}
+  const {error}=await sb.auth.signUp({
+    email:ph+'@piker.com',password:pw,
+    options:{data:{first_name:fn,last_name:ln,phone:ph,ref_code:genRef(ph),referred_by:ref||null}}
+  });
+  if(error){showToast('ስህተት: '+error.message,'error');return;}
+  if(ref){
+    const {data:inv}=await sb.from('profiles').select('*').eq('ref_code',ref).single();
+    if(inv){
+      await sb.from('profiles').update({balance:(inv.balance||0)+105,ref_earnings:(inv.ref_earnings||0)+105,ref_count:(inv.ref_count||0)+1}).eq('id',inv.id);
+      await sb.from('transactions').insert({user_id:inv.id,type:'referral',amount:105,description:'Referral — '+fn+' ተቀላቀሉ',status:'completed'});
+    }
+  }
+  // ✅ ከተመዘገቡ በኋላ login ፎርም ላይ ስልካቸውን እና password አስቀድሞ ሙላ
+  showLogin();
+  document.getElementById('l-phone').value = ph;
+  document.getElementById('l-pass').value = pw;
+  showToast('✅ ተመዝግበዋል! ስልክዎንና ፓስወርድዎን ያረጋግጡ እና ይግቡ','success');
+}
+
+async function handleLogin(){
+  const ph=document.getElementById('l-phone').value.trim().replace(/\D/g,'');
+  const pw=document.getElementById('l-pass').value;
+  if(!ph||!pw){showToast('ሁሉም ሜዳዎች ያስፈልጋሉ!','error');return;}
+  const {error}=await sb.auth.signInWithPassword({email:ph+'@piker.com',password:pw});
+  if(error){showToast('ስልክ ወይም ፓስወርድ ስህተት!','error');return;}
+  await initUser();
+}
+
+async function logout(){
+  await sb.auth.signOut();
+  user=null;profile=null;txs=[];
+  showPage('auth');showToast('ወጥቷል');
+}
+
+async function initUser(){
+  const {data:{user:u}}=await sb.auth.getUser();
+  if(!u){showPage('auth');document.getElementById('loading').style.display='none';return;}
+  user=u;
+  let {data:p}=await sb.from('profiles').select('*').eq('id',u.id).single();
+  if(!p){
+    const m=u.user_metadata||{};
+    const np={id:u.id,first_name:m.first_name||'ተጠቃሚ',last_name:m.last_name||'',phone:m.phone||'',
+      balance:105,total_income:105,total_deposited:0,total_withdrawn:0,plan_income:0,
+      daily_income:0,ref_earnings:0,ref_code:m.ref_code||genRef(m.phone||'000000'),
+      ref_count:0,referred_by:m.referred_by||null,streak:0,last_daily:null,
+      active_plan:null,plan_days_left:0,plan_start:null,last_plan_collect:null};
+    await sb.from('profiles').insert(np);
+    await sb.from('transactions').insert({user_id:u.id,type:'bonus',amount:105,description:'ምዝገባ ቦነስ',status:'completed'});
+    p=np;
+  }
+  profile=p;
+  const {data:t}=await sb.from('transactions').select('*').eq('user_id',u.id).order('created_at',{ascending:false}).limit(60);
+  txs=t||[];
+  await collectPlanIncome();
+  renderHome();
+  showPage('home');
+  document.getElementById('loading').style.display='none';
+}
+
+async function collectPlanIncome(){
+  if(!profile.active_plan||!profile.plan_days_left)return;
+  const pl=PLANS.find(x=>x.id===profile.active_plan);if(!pl)return;
+  const last=profile.last_plan_collect?new Date(profile.last_plan_collect):new Date(profile.plan_start||Date.now());
+  if((Date.now()-last)<86400000)return;
+  const earn=pl.daily,nb=profile.balance+earn,left=profile.plan_days_left-1;
+  const upd={balance:nb,plan_income:(profile.plan_income||0)+earn,total_income:(profile.total_income||0)+earn,plan_days_left:left,last_plan_collect:new Date().toISOString()};
+  if(left<=0)upd.active_plan=null;
+  await sb.from('profiles').update(upd).eq('id',user.id);
+  await sb.from('transactions').insert({user_id:user.id,type:'income',amount:earn,description:pl.name+' ዕለታዊ ገቢ',status:'completed'});
+  profile={...profile,...upd};
+  showToast('💰 ETB '+fmt(earn)+' Plan ገቢ!','success');
+}
+
+function renderHome(){
+  const p=profile;
+  document.getElementById('h-name').textContent=p.first_name+' '+(p.last_name||'');
+  document.getElementById('h-bal').textContent='ETB '+fmt(p.balance);
+  document.getElementById('h-inc').textContent='ETB '+fmt(p.total_income);
+  document.getElementById('h-plan').textContent=fmt(p.plan_income||0);
+  document.getElementById('h-daily').textContent=fmt(p.daily_income||0);
+  document.getElementById('h-streak').textContent=(p.streak||0)+' ቀን';
+  document.getElementById('p-av').textContent=(p.first_name||'P')[0].toUpperCase();
+  document.getElementById('p-name').textContent=p.first_name+' '+(p.last_name||'');
+  document.getElementById('p-phone').textContent='+251 '+p.phone;
+  renderPlans();
+}
+
+function renderPlans(){
+  const p=profile;
+  document.getElementById('plans-list').innerHTML=PLANS.map(pl=>{
+    const owned=p.active_plan===pl.id;
+    const can=(p.balance||0)>=pl.price&&!p.active_plan;
+    return `<div class="plan-card">
+      <div class="plan-img ${pl.img}">
+        <div class="plan-ico">${pl.ico}</div>
+        <div class="plan-badge">${owned?'ACTIVE':'PREMIUM'}</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-name">${pl.name}</div>
+        <div class="plan-price-row"><div class="plan-price">ETB ${fmt(pl.price)}</div><div class="plan-price-lbl">/ ዋጋ</div></div>
+        <div class="plan-stats">
+          <div class="plan-stat"><div class="plan-stat-lbl">ዕለታዊ</div><div class="plan-stat-val gr">ETB ${fmt(pl.daily)}</div></div>
+          <div class="plan-stat"><div class="plan-stat-lbl">ቀናት</div><div class="plan-stat-val">${pl.days}</div></div>
+          <div class="plan-stat"><div class="plan-stat-lbl">ጠቅላላ</div><div class="plan-stat-val gr">ETB ${fmt(pl.daily*pl.days)}</div></div>
+        </div>
+        <button class="btn-buy ${owned?'owned':''}" ${owned||!can?'disabled':''} onclick="buyPlan(${pl.id})">
+          ${owned?'✅ ጥቅም ላይ ('+p.plan_days_left+' ቀን)':can?'🛒 ይግዙ':'🔒 ቀሪ ሒሳብ ያስፈልጋል'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function buyPlan(id){
+  const pl=PLANS.find(x=>x.id===id);if(!pl)return;
+  if(profile.active_plan){showToast('አሁን Plan አለዎት!','error');return;}
+  if(profile.balance<pl.price){showToast('ቀሪ ሒሳብ አይበቃም!','error');return;}
+  const nb=profile.balance-pl.price;
+  await sb.from('profiles').update({balance:nb,active_plan:pl.id,plan_days_left:pl.days,plan_start:new Date().toISOString()}).eq('id',user.id);
+  await sb.from('transactions').insert({user_id:user.id,type:'plan',amount:-pl.price,description:pl.name+' ተገዛ',status:'completed'});
+  profile={...profile,balance:nb,active_plan:pl.id,plan_days_left:pl.days};
+  renderHome();showToast('✅ '+pl.name+' ተገዛ!','success');
+}
+
+async function handleDeposit(){
+  const amt=parseFloat(document.getElementById('dep-amt').value);
+  const tele=document.getElementById('dep-tele').value.trim();
+  const txid=document.getElementById('dep-txid').value.trim();
+  if(!amt||amt<100){showToast('ቢያንስ ETB 100!','error');return;}
+  if(!tele){showToast('ቴሌብርር ቁጥር ያስፈልጋል!','error');return;}
+  if(!txid){showToast('Transaction ID ያስፈልጋል!','error');return;}
+  await sb.from('transactions').insert({user_id:user.id,type:'deposit',amount:amt,description:'Deposit — '+tele,reference:txid,status:'pending'});
+  closeModal('deposit');showToast('✅ Deposit ጥያቄ ተላከ! ማረጋገጫ ይጠብቁ','success');
+}
+
+function selMeth(m){
+  witMeth=m;
+  document.getElementById('m-tele').classList.toggle('active',m==='telebirr');
+  document.getElementById('m-bank').classList.toggle('active',m==='bank');
+}
+
+async function handleWithdraw(){
+  const amt=parseFloat(document.getElementById('wit-amt').value);
+  const acc=document.getElementById('wit-acc').value.trim();
+  if(!amt||amt<200){showToast('ቢያንስ ETB 200!','error');return;}
+  if(!acc){showToast('ቁጥር ያስፈልጋል!','error');return;}
+  if(profile.balance<amt){showToast('ቀሪ ሒሳብ አይበቃም!','error');return;}
+  const nb=profile.balance-amt;
+  await sb.from('profiles').update({balance:nb,total_withdrawn:(profile.total_withdrawn||0)+amt}).eq('id',user.id);
+  await sb.from('transactions').insert({user_id:user.id,type:'withdraw',amount:-amt,description:'Withdraw — '+witMeth+' — '+acc,status:'pending'});
+  profile={...profile,balance:nb,total_withdrawn:(profile.total_withdrawn||0)+amt};
+  renderHome();closeModal('withdraw');showToast('✅ Withdraw ጥያቄ! 24ሰዓት ውስጥ ይላካል','success');
+}
+
+function streakBonus(s){if(s>=30)return 100;if(s>=14)return 75;if(s>=7)return 50;return 25;}
+
+function openDailyModal(){
+  const p=profile;
+  const today=new Date().toDateString();
+  const done=p.last_daily&&new Date(p.last_daily).toDateString()===today;
+  const bonus=streakBonus(p.streak||0);
+  document.getElementById('d-amt').textContent='ETB '+bonus;
+  document.getElementById('d-sub').textContent=done?'ዛሬ ቀድሞ ወሰዷቸዋል — ነገ ይምጡ!':'ዛሬ ቦነስዎን ያግኙ!';
+  const btn=document.getElementById('daily-btn');
+  btn.disabled=done;btn.textContent=done?'✅ ዛሬ ወሰዱ':'🎁 ETB '+bonus+' ውሰዱ';
+  const days=['እ','ሰ','ማ','ረ','ሐ','አ','ቅ'];
+  const ti=new Date().getDay();
+  document.getElementById('streak-row').innerHTML=days.map((d,i)=>{
+    let cl='spill';
+    if(i<ti&&(p.streak||0)>0)cl+=' done';
+    if(i===ti)cl+=' today';
+    return `<div class="${cl}"><div class="si">${i<ti&&(p.streak||0)>0?'✅':i===ti?'🔥':'⬜'}</div>${d}</div>`;
+  }).join('');
+  document.getElementById('modal-daily').classList.add('open');
+}
+
+async function handleDaily(){
+  const p=profile;
+  const today=new Date().toDateString();
+  if(p.last_daily&&new Date(p.last_daily).toDateString()===today){showToast('ዛሬ ቦነስ ወሰዷቸዋል!','error');return;}
+  const yest=new Date();yest.setDate(yest.getDate()-1);
+  const cons=p.last_daily&&new Date(p.last_daily).toDateString()===yest.toDateString();
+  const ns=cons?(p.streak||0)+1:1;
+  const bonus=streakBonus(ns-1);
+  const nb=(p.balance||0)+bonus;
+  const upd={balance:nb,streak:ns,last_daily:new Date().toISOString(),daily_income:(p.daily_income||0)+bonus,total_income:(p.total_income||0)+bonus};
+  await sb.from('profiles').update(upd).eq('id',user.id);
+  await sb.from('transactions').insert({user_id:user.id,type:'daily',amount:bonus,description:'Daily Check-In — Streak '+ns+' ቀን',status:'completed'});
+  profile={...profile,...upd};
+  renderHome();closeModal('daily');showToast('🎉 ETB '+bonus+' ቦነስ ተቀበሉ! Streak: '+ns,'success');
+}
+
+function renderEarnings(){
+  const p=profile;
+  document.getElementById('e-bal').textContent=fmt(p.balance);
+  document.getElementById('e-inc').textContent=fmt(p.total_income||0);
+  document.getElementById('e-plan').textContent=fmt(p.plan_income||0);
+  document.getElementById('e-daily').textContent=fmt(p.daily_income||0);
+  document.getElementById('e-ref').textContent=fmt(p.ref_earnings||0);
+  document.getElementById('e-wit').textContent=fmt(p.total_withdrawn||0);
+  const tm={deposit:{i:'💰',c:'dep',l:'Deposit'},withdraw:{i:'📤',c:'wit',l:'Withdraw'},bonus:{i:'🎁',c:'bon',l:'ቦነስ'},daily:{i:'📅',c:'bon',l:'Daily'},income:{i:'📈',c:'inc',l:'Plan ገቢ'},referral:{i:'👥',c:'bon',l:'Referral'},plan:{i:'📦',c:'wit',l:'Plan'}};
+  const list=document.getElementById('tx-list');
+  if(!txs.length){list.innerHTML='<div class="empty-box"><div class="empty-ico">📭</div><div>ምንም ግብይት የለም</div></div>';return;}
+  list.innerHTML=txs.map(tx=>{
+    const t=tm[tx.type]||{i:'💫',c:'bon',l:tx.type};
+    const pos=tx.amount>=0;
+    const amt=(pos?'+ETB ':'-ETB ')+fmt(Math.abs(tx.amount));
+    const dt=tx.created_at?new Date(tx.created_at).toLocaleDateString('am-ET'):'';
+    const st=tx.status==='pending'?'<span class="tx-st pend">Pending</span>':'<span class="tx-st done">✓ Done</span>';
+    return `<div class="tx-item">
+      <div class="tx-ico ${t.c}">${t.i}</div>
+      <div class="tx-info"><div class="tx-name">${t.l} — ${tx.description||''}</div><div class="tx-date">${dt} ${st}</div></div>
+      <div class="tx-amt ${pos?'pos':'neg'}">${amt}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderShare(){
+  const p=profile;
+  document.getElementById('s-code').textContent=p.ref_code||genRef(p.phone);
+  document.getElementById('s-count').textContent=p.ref_count||0;
+  document.getElementById('s-earn').textContent=fmt(p.ref_earnings||0);
+}
+function copyCode(){
+  const c=document.getElementById('s-code').textContent;
+  navigator.clipboard.writeText(c).then(()=>showToast('✅ ኮድ ተቀድቷል: '+c,'success'));
+}
+function shareTg(){
+  const c=document.getElementById('s-code').textContent;
+  window.open('https://t.me/share/url?url=https://piker-shop.netlify.app&text='+encodeURIComponent('🚀 Piker-Shop ይቀላቀሉ!\n💰 ETB 105 ቦነስ ያግኙ!\nReferral ኮዴ: '+c));
+}
+function shareWa(){
+  const c=document.getElementById('s-code').textContent;
+  window.open('https://wa.me/?text='+encodeURIComponent('🚀 Piker-Shop ይቀላቀሉ!\n💰 ETB 105 ቦነስ!\nReferral ኮዴ: '+c));
+}
+
+function openModal(id){if(id==='daily'){openDailyModal();return;}document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
+
+function setAmt(t,v){
+  document.getElementById(t==='dep'?'dep-amt':'wit-amt').value=v;
+  document.getElementById(t==='dep'?'dep-disp':'wit-disp').textContent=v.toLocaleString();
+}
+
+window.addEventListener('load',async()=>{await initUser();});
+</script>
 </body>
 </html>
