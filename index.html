@@ -318,6 +318,10 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
       <div class="w-ref-code" id="w-ref-code">PKR-000000</div>
     </div>
     <div class="w-ref-note">ወዳጅዎን ሲጋብዙ ለእያንዳንዱ ETB 105 ያገኛሉ!</div>
+    <div style="margin-bottom:8px;font-size:11px;color:#8a96b0;">
+      📢 <a href="https://t.me/PikerShopOfficial" target="_blank" style="color:#c9941a;font-weight:700;">ቻናላችን ይቀላቀሉ</a> &nbsp;|&nbsp;
+      👨‍💼 <a href="https://t.me/Pikershop2026" target="_blank" style="color:#1a2f6e;font-weight:700;">@Pikershop2026</a>
+    </div>
     <button class="w-btn" onclick="closeWelcome()">🚀 ወደ ቤት ገጽ ይሂዱ</button>
   </div>
 </div>
@@ -508,6 +512,14 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
     <div class="mbar"></div>
     <div class="mttl">💰 Top Up Account</div>
     <div class="msub">ምን ያህል ሒሳብ ማስቀመጥ ይፈልጋሉ?</div>
+
+    <!-- M-Pesa Info Box -->
+    <div style="background:linear-gradient(135deg,#fef9ec,#fdf0c2);border:2px solid #f0b429;border-radius:14px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:10px;font-weight:700;color:#8a96b0;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">📱 ወደዚህ ቁጥር ይላኩ (M-Pesa)</div>
+      <div style="font-size:26px;font-weight:900;color:#1a2f6e;font-family:'Playfair Display',serif;letter-spacing:2px;margin-bottom:4px;">0723182482</div>
+      <div style="font-size:11px;color:#c9941a;font-weight:700;">ከዚህ ቁጥር ያስቀምጡ ከዚያ Transaction ID ያስገቡ</div>
+    </div>
+
     <div class="amt-disp"><div class="amt-cur">ETB</div><div class="amt-num" id="dep-disp">0</div></div>
     <div class="qa-row">
       <button class="qa-pill" onclick="setAmt('dep',500)">500</button>
@@ -515,10 +527,11 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
       <button class="qa-pill" onclick="setAmt('dep',2000)">2,000</button>
       <button class="qa-pill" onclick="setAmt('dep',5000)">5,000</button>
     </div>
-    <div class="inp-wrap"><label class="inp-lbl">መጠን (ብር)</label><input class="inp" type="number" id="dep-amt" placeholder="0" oninput="document.getElementById('dep-disp').textContent=this.value||'0'"></div>
-    <div class="inp-wrap"><label class="inp-lbl">ቴሌብርር ቁጥር</label><input class="inp" type="tel" id="dep-tele" placeholder="+251 9XXXXXXXX"></div>
-    <div class="inp-wrap"><label class="inp-lbl">Transaction ID</label><input class="inp" type="text" id="dep-txid" placeholder="TX-XXXXXXXXXX"></div>
-    <button class="btn-navy" onclick="handleDeposit()">✅ Deposit አድርጉ</button>
+    <div class="inp-wrap"><label class="inp-lbl">የሚልኩት መጠን (ብር)</label><input class="inp" type="number" id="dep-amt" placeholder="0" oninput="document.getElementById('dep-disp').textContent=this.value||'0'"></div>
+    <div class="inp-wrap"><label class="inp-lbl">የእርስዎ ስልክ ቁጥር</label><input class="inp" type="tel" id="dep-tele" placeholder="09XXXXXXXX"></div>
+    <div class="inp-wrap"><label class="inp-lbl">Transaction ID (M-Pesa ደረሰኝ)</label><input class="inp" type="text" id="dep-txid" placeholder="XXXXXXXXXXXX"></div>
+    <button class="btn-navy" onclick="handleDeposit()">✅ Deposit ጥያቄ ላክ</button>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:#8a96b0;">ጥያቄ ከላኩ በኋላ ማናጀር ያረጋግጣሉ<br>📞 <a href="https://t.me/Pikershop2026" style="color:#c9941a;font-weight:700;">@Pikershop2026</a></div>
     <div class="cancel-lnk" onclick="closeModal('deposit')">ሰርዝ</div>
   </div>
 </div>
@@ -589,7 +602,7 @@ let currentPhone=null, profile=null, witMeth='telebirr';
 // HELPERS
 function fmt(n){return parseFloat(n||0).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function genRef(ph){return'PKR-'+String(ph).slice(-6);}
-function goCS(){window.open('https://t.me/PikerShopSupport','_blank');}
+function goCS(){window.open('https://t.me/Pikershop2026','_blank');}
 function showToast(msg,type=''){
   const t=document.getElementById('toast');
   t.textContent=msg; t.className='show '+(type||'');
@@ -886,11 +899,11 @@ function copyCode(){
 function shareTg(){
   const c=document.getElementById('s-code').textContent;
   const link='https://piker-shop.netlify.app?ref='+c;
-  window.open('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent('🚀 Piker-Shop ይቀላቀሉ!\n💰 ETB 105 ቦነስ ያግኙ!\nReferral ኮዴ: '+c));
+  window.open('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent('🚀 Piker-Shop ይቀላቀሉ!\n💰 ETB 105 ቦነስ ያግኙ!\nReferral ኮዴ: '+c+'\n\n📢 ቻናላችን: https://t.me/PikerShopOfficial\n👨‍💼 ማናጀር: @Pikershop2026'));
 }
 function shareWa(){
   const c=document.getElementById('s-code').textContent;
-  window.open('https://wa.me/?text='+encodeURIComponent('🚀 Piker-Shop ይቀላቀሉ!\n💰 ETB 105 ቦነስ!\nReferral ኮዴ: '+c+'\nhttps://piker-shop.netlify.app?ref='+c));
+  window.open('https://wa.me/?text='+encodeURIComponent('🚀 Piker-Shop ይቀላቀሉ!\n💰 ETB 105 ቦነስ!\nReferral ኮዴ: '+c+'\nhttps://piker-shop.netlify.app?ref='+c+'\n\n📢 ቻናል: https://t.me/PikerShopOfficial'));
 }
 
 // PROFILE
