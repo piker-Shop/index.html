@@ -135,6 +135,12 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 .plan-img.p1{background:linear-gradient(135deg,#0f4c81,#1a7a5e);}
 .plan-img.p2{background:linear-gradient(135deg,#7c2d12,#c2410c);}
 .plan-img.p3{background:linear-gradient(135deg,#1e1b4b,#5b21b6);}
+.plan-img.p4{background:linear-gradient(135deg,#064e3b,#065f46);}
+.plan-img.p5{background:linear-gradient(135deg,#78350f,#92400e);}
+.plan-img.p6{background:linear-gradient(135deg,#4c1d95,#6d28d9);}
+.plan-img.p7{background:linear-gradient(135deg,#1e1b4b,#312e81);}
+.plan-img.p8{background:linear-gradient(135deg,#374151,#4b5563);}
+.plan-img.p9{background:linear-gradient(135deg,#374151,#4b5563);}
 .plan-ico{font-size:50px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));}
 .plan-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:var(--navy2);font-size:9px;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:uppercase;}
 .plan-body{padding:14px 16px 16px;}
@@ -511,7 +517,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
   <div class="modal">
     <div class="mbar"></div>
     <div class="mttl">💰 Top Up Account</div>
-    <div class="msub">ምን ያህል ሒሳብ ማስቀመጥ ይፈልጋሉ?</div>
+    <div class="msub">ዝቅተኛ Deposit: ETB 600</div>
 
     <!-- M-Pesa Info Box -->
     <div style="background:linear-gradient(135deg,#fef9ec,#fdf0c2);border:2px solid #f0b429;border-radius:14px;padding:14px;margin-bottom:16px;">
@@ -522,10 +528,10 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 
     <div class="amt-disp"><div class="amt-cur">ETB</div><div class="amt-num" id="dep-disp">0</div></div>
     <div class="qa-row">
-      <button class="qa-pill" onclick="setAmt('dep',500)">500</button>
-      <button class="qa-pill" onclick="setAmt('dep',1000)">1,000</button>
-      <button class="qa-pill" onclick="setAmt('dep',2000)">2,000</button>
-      <button class="qa-pill" onclick="setAmt('dep',5000)">5,000</button>
+      <button class="qa-pill" onclick="setAmt('dep',600)">600</button>
+      <button class="qa-pill" onclick="setAmt('dep',1500)">1,500</button>
+      <button class="qa-pill" onclick="setAmt('dep',3200)">3,200</button>
+      <button class="qa-pill" onclick="setAmt('dep',7000)">7,000</button>
     </div>
     <div class="inp-wrap"><label class="inp-lbl">የሚልኩት መጠን (ብር)</label><input class="inp" type="number" id="dep-amt" placeholder="0" oninput="document.getElementById('dep-disp').textContent=this.value||'0'"></div>
     <div class="inp-wrap"><label class="inp-lbl">የእርስዎ ስልክ ቁጥር</label><input class="inp" type="tel" id="dep-tele" placeholder="09XXXXXXXX"></div>
@@ -540,13 +546,13 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
   <div class="modal">
     <div class="mbar"></div>
     <div class="mttl">📤 Withdraw Amount</div>
-    <div class="msub">ቢያንስ ETB 200 ያውጡ</div>
+    <div class="msub">ዝቅተኛ Withdraw: ETB 150</div>
     <div class="amt-disp"><div class="amt-cur">ETB</div><div class="amt-num" id="wit-disp">0</div></div>
     <div class="qa-row">
-      <button class="qa-pill" onclick="setAmt('wit',200)">200</button>
+      <button class="qa-pill" onclick="setAmt('wit',150)">150</button>
       <button class="qa-pill" onclick="setAmt('wit',500)">500</button>
       <button class="qa-pill" onclick="setAmt('wit',1000)">1,000</button>
-      <button class="qa-pill" onclick="setAmt('wit',2000)">2,000</button>
+      <button class="qa-pill" onclick="setAmt('wit',3000)">3,000</button>
     </div>
     <div class="inp-wrap"><label class="inp-lbl">የሚወስዱት ብር</label><input class="inp" type="number" id="wit-amt" placeholder="0" oninput="document.getElementById('wit-disp').textContent=this.value||'0'"></div>
     <div class="inp-wrap">
@@ -592,9 +598,15 @@ const DB = {
 };
 
 const PLANS=[
-  {id:1,name:"Fund Investment 01",ico:"📈",img:"p1",price:1500,daily:200,days:15},
-  {id:2,name:"Fund Investment 02",ico:"💼",img:"p2",price:3500,daily:500,days:15},
-  {id:3,name:"Fund Investment 03",ico:"👑",img:"p3",price:8000,daily:1200,days:15},
+  {id:1,name:"Invest 1",ico:"🌱",img:"p1",price:600,   daily:30,   days:45, total:1350},
+  {id:2,name:"Invest 2",ico:"📈",img:"p2",price:1500,  daily:75,   days:45, total:3375},
+  {id:3,name:"Invest 3",ico:"💼",img:"p3",price:3200,  daily:180,  days:45, total:8100},
+  {id:4,name:"Invest 4",ico:"💎",img:"p4",price:7000,  daily:400,  days:50, total:20000},
+  {id:5,name:"Invest 5",ico:"🏆",img:"p5",price:15000, daily:1000, days:50, total:50000},
+  {id:6,name:"Invest 6",ico:"👑",img:"p6",price:40000, daily:3000, days:50, total:150000},
+  {id:7,name:"Invest 7",ico:"🚀",img:"p7",price:90000, daily:8000, days:50, total:400000},
+  {id:8,name:"Invest 8",ico:"🔥",img:"p8",price:0,     daily:0,    days:0,  total:0, soon:true},
+  {id:9,name:"Invest 9",ico:"⭐",img:"p9",price:0,     daily:0,    days:0,  total:0, soon:true},
 ];
 
 let currentPhone=null, profile=null, witMeth='telebirr';
@@ -747,20 +759,30 @@ function renderHome(){
 function renderPlans(){
   const p=profile;
   document.getElementById('plans-list').innerHTML=PLANS.map(pl=>{
+    if(pl.soon) return`<div class="plan-card">
+      <div class="plan-img ${pl.img}" style="opacity:.7">
+        <div class="plan-ico">${pl.ico}</div>
+        <div class="plan-badge" style="background:#6b7280">COMING SOON</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-name">${pl.name}</div>
+        <div style="text-align:center;padding:16px 0;color:var(--gray);font-size:13px;font-weight:700;">⏳ Coming Soon...</div>
+      </div>
+    </div>`;
     const owned=p.active_plan===pl.id;
     const can=(p.balance||0)>=pl.price&&!p.active_plan;
     return`<div class="plan-card">
       <div class="plan-img ${pl.img}"><div class="plan-ico">${pl.ico}</div><div class="plan-badge">${owned?'ACTIVE':'PREMIUM'}</div></div>
       <div class="plan-body">
         <div class="plan-name">${pl.name}</div>
-        <div class="plan-price-row"><div class="plan-price">ETB ${fmt(pl.price)}</div><div class="plan-price-lbl">/ ዋጋ</div></div>
+        <div class="plan-price-row"><div class="plan-price">ETB ${fmt(pl.price)}</div><div class="plan-price-lbl">/ መግቢያ</div></div>
         <div class="plan-stats">
-          <div class="plan-stat"><div class="plan-stat-lbl">Daily</div><div class="plan-stat-val gr">ETB ${fmt(pl.daily)}</div></div>
+          <div class="plan-stat"><div class="plan-stat-lbl">በቀን</div><div class="plan-stat-val gr">ETB ${fmt(pl.daily)}</div></div>
           <div class="plan-stat"><div class="plan-stat-lbl">ቀናት</div><div class="plan-stat-val">${pl.days}</div></div>
-          <div class="plan-stat"><div class="plan-stat-lbl">ጠቅላላ</div><div class="plan-stat-val gr">ETB ${fmt(pl.daily*pl.days)}</div></div>
+          <div class="plan-stat"><div class="plan-stat-lbl">ጠቅላላ ገቢ</div><div class="plan-stat-val gr">ETB ${fmt(pl.total)}</div></div>
         </div>
         <button class="btn-buy ${owned?'owned':''}" ${owned||!can?'disabled':''} onclick="buyPlan(${pl.id})">
-          ${owned?'✅ Active ('+p.plan_days_left+' ቀን)':can?'🛒 ይግዙ':'🔒 ቀሪ ሒሳብ ያስፈልጋል'}
+          ${owned?'✅ Active ('+p.plan_days_left+' ቀን)':can?'🛒 ይግዙ':'🔒 ETB '+fmt(pl.price)+' ያስፈልጋል'}
         </button>
       </div>
     </div>`;
@@ -786,7 +808,7 @@ function handleDeposit(){
   const amt=parseFloat(document.getElementById('dep-amt').value);
   const tele=document.getElementById('dep-tele').value.trim();
   const txid=document.getElementById('dep-txid').value.trim();
-  if(!amt||amt<100){showToast('ቢያንስ ETB 100!','error');return;}
+  if(!amt||amt<600){showToast('ዝቅተኛ Deposit ETB 600 ነው!','error');return;}
   if(!tele){showToast('ቴሌብርር ቁጥር ያስፈልጋል!','error');return;}
   if(!txid){showToast('Transaction ID ያስፈልጋል!','error');return;}
   DB.addTx(currentPhone,{type:'deposit',amount:amt,desc:'Deposit ጥያቄ — '+tele+' — TX:'+txid,status:'pend'});
@@ -803,7 +825,7 @@ function selMeth(m){
 function handleWithdraw(){
   const amt=parseFloat(document.getElementById('wit-amt').value);
   const acc=document.getElementById('wit-acc').value.trim();
-  if(!amt||amt<200){showToast('ቢያንስ ETB 200!','error');return;}
+  if(!amt||amt<150){showToast('ዝቅተኛ Withdraw ETB 150 ነው!','error');return;}
   if(!acc){showToast('ቁጥር ያስፈልጋል!','error');return;}
   if(profile.balance<amt){showToast('ቀሪ ሒሳብ አይበቃም!','error');return;}
   profile.balance-=amt;
